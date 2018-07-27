@@ -25,6 +25,8 @@ namespace Process.NET.Assembly.CallingConventions
                     return Singleton<FastcallCallingConvention>.Instance;
                 case Native.Types.CallingConventions.Thiscall:
                     return Singleton<ThiscallCallingConvention>.Instance;
+                case Native.Types.CallingConventions.Register:
+                    return Singleton<RegisterCallingConvention>.Instance;
                 default:
                     throw new ApplicationException("Unsupported calling convention.");
             }

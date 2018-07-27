@@ -45,7 +45,17 @@ namespace Process.NET.Native.Types
         ///     Ret. Value : Returned in the EAX register
         ///     Notes      : Used for object-oriented programming by Microsoft Visual C++
         /// </summary>
-        Thiscall
+        Thiscall,
+        
+        /// <summary>
+        ///     Name       : Borland Register Calling Convention
+        ///     Clean-up   : Callee
+        ///     The first three parameters are placed in the AEX, EDX and ECX registers respectively.
+        ///     Any remaining parameters are placed on the stack in reverse order.
+        ///     Ret. Value : Returned in the EAX register
+        ///     Notes      : Used in Borland/Embarcado Delphi x86
+        /// </summary>
+        Register
     }
 
     public enum MouseMessages

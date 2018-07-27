@@ -4,62 +4,100 @@ using System.Linq;
 
 namespace Process.NET.Patterns
 {
-    public class DwordPattern : IMemoryPattern
+  public abstract class DwordPattern : IMemoryPattern
+  {
+    #region Properties & Fields - Non-Public
+
+    protected readonly byte[] _bytes;
+    protected readonly string _mask;
+
+    #endregion
+
+
+
+
+    #region Constructors
+
+    protected DwordPattern(
+      byte[]            bytes,
+      string            mask,
+      int               offset,
+      MemoryPatternType type,
+      string            pattern)
     {
-        private readonly byte[] _bytes;
-        private readonly string _mask;
-
-        public readonly string PatternText;
-
-        public DwordPattern(string dwordPattern)
-        {
-            PatternText = dwordPattern;
-            PatternType = MemoryPatternType.Function;
-            Offset = 0;
-            _bytes = GetBytesFromDwordPattern(dwordPattern);
-            _mask = GetMaskFromDwordPattern(dwordPattern);
-        }
-
-        public DwordPattern(string pattern, int offset)
-        {
-            PatternText = pattern;
-            PatternType = MemoryPatternType.Data;
-            Offset = offset;
-            _bytes = GetBytesFromDwordPattern(pattern);
-            _mask = GetMaskFromDwordPattern(pattern);
-        }
-
-        public IList<byte> GetBytes()
-        {
-            return _bytes;
-        }
-
-        public string GetMask()
-        {
-            return _mask;
-        }
-
-        public int Offset { get; }
-        public MemoryPatternType PatternType { get; }
-
-        private static string GetMaskFromDwordPattern(string pattern)
-        {
-            var mask = pattern.Split(' ').Select(s => s.Contains('?') ? "?" : "x");
-
-            return string.Concat(mask);
-        }
-
-        private static byte[] GetBytesFromDwordPattern(string pattern)
-        {
-            return
-                pattern.Split(' ')
-                    .Select(s => s.Contains('?') ? (byte) 0 : byte.Parse(s, NumberStyles.HexNumber))
-                    .ToArray();
-        }
-
-        public override string ToString()
-        {
-            return PatternText;
-        }
+      _bytes      = bytes;
+      _mask       = mask;
+      Offset      = offset;
+      PatternType = type;
+      PatternText = pattern;
     }
+
+    #endregion
+
+
+
+
+    #region Properties & Fields - Public
+
+    public readonly string PatternText;
+
+    #endregion
+
+
+
+
+    #region Properties Impl - Public
+
+    public int               Offset      { get; }
+    public MemoryPatternType PatternType { get; }
+
+    #endregion
+
+
+
+
+    #region Methods Impl
+
+    public override string ToString()
+    {
+      return PatternText;
+    }
+
+    public IList<byte> GetBytes()
+    {
+      return _bytes;
+    }
+
+    public string GetMask()
+    {
+      return _mask;
+    }
+
+    #endregion
+
+
+
+
+    #region Methods
+
+    protected static string GetMaskFromDwordPattern(string pattern)
+    {
+      var mask = pattern.Split(' ').Select(s => s.Contains('?') ? "?" : "x");
+
+      return string.Concat(mask);
+    }
+
+    protected static byte[] GetBytesFromDwordPattern(string pattern)
+    {
+      return
+        pattern.Split(' ')
+               .Select(s => s.Contains('?')
+                         ? (byte)0
+                         : byte.Parse(s,
+                                      NumberStyles.HexNumber))
+               .ToArray();
+    }
+
+    #endregion
+  }
 }

@@ -43,7 +43,7 @@ namespace Process.NET.Memory
         ///     Releases all resources used by the <see cref="AllocatedMemory" /> object.
         /// </summary>
         /// <remarks>Don't use the IDisposable pattern because the class is sealed.</remarks>
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (!IsDisposed)
             {

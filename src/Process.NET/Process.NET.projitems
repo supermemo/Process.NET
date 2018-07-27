@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>4b6ac8fd-5dde-4736-9c82-7ff32c099093</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Process.NET</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\AppliedManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\ComplexAppliedManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\Detours\Detour.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\Detours\DetourManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\IApplied.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\IAppliedManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\IComplexApplied.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\IComplexAppliedManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\Patches\Patch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Applied\Patches\PatchManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\Assemblers\Fasm32Assembler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\Assemblers\IAssembler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\AssemblyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\AssemblyTransaction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\CallingConventionSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\CdeclCallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\RegisterCallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\FastcallCallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\ICallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\StdcallCallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\CallingConventions\ThiscallCallingConvention.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\IAssemblyFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Assembly\IAssemblyTransaction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\AttributeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\IProcessEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\NativeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\ProcessExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\ProcessModuleExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\UnsafeMemoryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IProcess.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\IDisposableState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\IMarshalledValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\MarshalCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\MarshalledValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\MarshalType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Marshaling\MarshalValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\AllocatedMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ExternalProcessMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\IAllocatedMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\IMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\IMemoryFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\IPointer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\LocalProcessMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\LocalUnmanagedMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryPointer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryProtection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryProtectionOperation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryRegion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ObjPtr.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\ProcessMemory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\IModuleFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\InjectedModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\IProcessFunction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\IProcessModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\ModuleFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\RemoteFunction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Modules\RemoteModule.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Advapi32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Callbacks.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Kernel32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Nt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Types\NativeEnums.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Types\NativeStructs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Types\SafeLoadLibrary.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\Types\SafeMemoryHandle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Native\User32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\DwordCallPattern.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\DwordDataPattern.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\DwordFunctionPattern.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\DwordPattern.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\IMemoryPattern.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\IPatternScanner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\MemoryPatternType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\PatternScanner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patterns\PatternScanResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProcessSharp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\ExecutionContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\FrozenThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\IFrozenThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\IRemoteThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\IThreadFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\RemoteThread.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Threads\ThreadFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\HandleManipulator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ModuleHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ProcessHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Randomizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Singleton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ThreadHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WindowHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\HookEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\IWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\IWindowFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Keyboard\IKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Keyboard\KeyboardHook.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Keyboard\KeyboardHookEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Keyboard\MessageKeyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Message.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Mouse\IMouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Mouse\MouseHook.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Mouse\MouseHookEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\Mouse\SendInputMouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\RemoteWindow.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\WindowFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\WndProcEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows\WndProcHook.cs" />
+  </ItemGroup>
+</Project>

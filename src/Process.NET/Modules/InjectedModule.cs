@@ -36,7 +36,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     Releases all resources used by the <see cref="InjectedModule" /> object.
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (!IsDisposed)
             {

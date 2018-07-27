@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Process.NET</RootNamespace>
     <AssemblyName>Process.NET</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,9 +79,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fasm.NET, Version=1.0.4939.27955, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\Fasm.NET.1.70.03.2\lib\Fasm.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.1\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Applied\AppliedManager.cs" />
@@ -89,14 +96,22 @@
     <Compile Include="Applied\Detours\DetourManager.cs" />
     <Compile Include="Applied\Patches\Patch.cs" />
     <Compile Include="Applied\Patches\PatchManager.cs" />
+    <Compile Include="Assembly\Assemblers\Fasm32Assembler.cs" />
     <Compile Include="Assembly\AssemblyFactory.cs" />
+    <Compile Include="Assembly\CallingConventions\RegisterCallingConvention.cs" />
+    <Compile Include="Extensions\IProcessEx.cs" />
     <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Extensions\ProcessModuleExtensions.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="Memory\MemoryType.cs" />
+    <Compile Include="Memory\ObjPtr.cs" />
+    <Compile Include="Patterns\DwordCallPattern.cs" />
+    <Compile Include="Patterns\DwordDataPattern.cs" />
+    <Compile Include="Patterns\DwordFunctionPattern.cs" />
     <Compile Include="Patterns\PatternScanner.cs" />
     <Compile Include="ProcessSharp.cs" />
     <Compile Include="Extensions\NativeExtensions.cs" />
+    <Compile Include="Threads\ExecutionContext.cs" />
     <Compile Include="Windows\Keyboard\KeyboardHookEventArgs.cs" />
     <Compile Include="Windows\Message.cs" />
     <Compile Include="Windows\Mouse\MouseHookEventArgs.cs" />
@@ -186,7 +201,9 @@
     <Compile Include="Memory\ExternalProcessMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

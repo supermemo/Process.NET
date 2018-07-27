@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using Process.NET.Memory;
@@ -143,8 +144,19 @@ namespace Process.NET.Marshaling
         /// </summary>
         /// <param name="byteArray">The array of bytes corresponding to a managed object.</param>
         /// <returns>A managed object.</returns>
-        public static T ByteArrayToObject(byte[] byteArray)
+        public unsafe static T ByteArrayToObject(byte[] byteArray)
         {
+          var requiresMarshal = MarshalCache<T>.TypeRequiresMarshal;
+          var size            = requiresMarshal ? MarshalCache<T>.Size : Unsafe.SizeOf<T>();
+
+          fixed (byte* b = byteArray)
+          {
+            if (requiresMarshal)
+              return Marshal.PtrToStructure<T>(new IntPtr(b));
+
+            return Unsafe.Read<T>(b);
+          }
+#if false
             // We'll tried to avoid marshalling as it really slows the process
             // First, check if the type can be converted without marhsalling
             switch (TypeCode)
@@ -205,6 +217,7 @@ namespace Process.NET.Marshaling
                 // Return a managed object created from the block of unmanaged memory
                 return unmanaged.Read<T>();
             }
+#endif
         }
 
         /// <summary>
