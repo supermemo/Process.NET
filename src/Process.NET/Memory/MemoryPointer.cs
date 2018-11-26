@@ -46,7 +46,7 @@ namespace Process.NET.Memory
     {
       // Save the parameters
       Process     = process;
-      BaseAddress = new IntPtr(objPtr.GetInstanceAddress(process.Memory) + objPtr.Offset);
+      BaseAddress = new IntPtr(objPtr.ReadInstanceAddress(process.Memory) + objPtr.Offset);
     }
 
 
@@ -235,8 +235,8 @@ namespace Process.NET.Memory
                                                  int    offset      = 0,
                                                  int    msFrequency = 200)
     {
-      if (Process.Native.HasExited)
-        return;
+      //if (Process.Native.HasExited)
+      //  return;
 
       lock (ValueChangedHandlers)
       {

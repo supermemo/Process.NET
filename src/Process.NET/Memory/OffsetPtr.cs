@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/06/08 14:32
-// Modified On:  2018/11/25 13:26
+// Created On:   2018/11/25 13:18
+// Modified On:  2018/11/25 13:28
 // Modified By:  Alexis
 
 #endregion
@@ -35,19 +35,19 @@ using Process.NET.Extensions;
 
 namespace Process.NET.Memory
 {
-  public class ObjPtr
+  public class OffsetPtr
   {
     #region Constructors
 
-    public ObjPtr(IntPtr addrPtr,
-                  int    offset = 0)
+    public OffsetPtr(IntPtr addrPtr,
+                     int    offset = 0)
     {
       AddrPtr = addrPtr;
       Offset  = offset;
     }
 
-    public ObjPtr(ObjPtr objPtr,
-                  int    offset = 0)
+    public OffsetPtr(ObjPtr objPtr,
+                     int    offset = 0)
     {
       ObjectPtr = objPtr;
       Offset    = offset;
@@ -71,18 +71,14 @@ namespace Process.NET.Memory
 
     #region Methods
 
-    public int ReadInstanceAddress(IMemory memory)
-    {
-      return ObjectPtr != null
-        ? memory.Read<int>(ObjectPtr)
-        : memory.Read<int>(AddrPtr);
-    }
-
     public T Read<T>(IMemory memory,
                      int     secondOffset = 0)
     {
-      return memory.Read<T>(this,
-                            secondOffset);
+      IntPtr baseAddr = ObjectPtr != null
+        ? new IntPtr(memory.Read<int>(ObjectPtr))
+        : AddrPtr;
+
+      return memory.Read<T>(baseAddr + Offset);
     }
 
     #endregion

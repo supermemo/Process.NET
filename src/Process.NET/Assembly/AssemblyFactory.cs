@@ -22,6 +22,12 @@ namespace Process.NET.Assembly
     protected const int ThreadHijackByteCodeLength        = 22;
     protected const int ThreadHijackByteCodeAndDataLength = ThreadHijackByteCodeLength + 5;
 
+#if DEBUG
+    private const int ExecutionTimeout = 600000;
+#else
+    private const int ExecutionTimeout = 3000;
+#endif
+
     #endregion
 
 
@@ -766,7 +772,7 @@ namespace Process.NET.Assembly
         executingContext.Thread.Resume();
 
         // TODO: Pass timeout by parameter
-        bool success = ev.WaitOne(6000);
+        bool success = ev.WaitOne(ExecutionTimeout);
 
         return success
           ? Process.Memory.Read<T>(executingContext.RetAddr)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Process.NET.Memory;
 using Process.NET.Utilities;
@@ -68,10 +69,25 @@ namespace Process.NET.Marshaling
         /// </summary>
         private void Marshal()
         {
+            if (typeof(IMarshallableValue).IsAssignableFrom(typeof(T)))
+            {
+                IMarshallableValue marshalVal = Value as IMarshallableValue;
+
+                // Allocate memory in the remote process
+                Allocated = Process.MemoryFactory.Allocate(Randomizer.GenerateString(), marshalVal.GetSize());
+
+                // Write the value(s)
+                marshalVal.Write(Allocated);
+
+                // Get the pointer
+                Reference = marshalVal.GetReference(Allocated.BaseAddress);
+            }
+            
             // If the type is string, it's a special case
-            if (typeof (T) == typeof (string))
+            else if (typeof (T) == typeof (string))
             {
                 var text = Value.ToString();
+
                 // Allocate memory in the remote process (string + '\0')
                 Allocated = Process.MemoryFactory.Allocate(Randomizer.GenerateString(), text.Length + 1);
                 // Write the value
@@ -79,6 +95,7 @@ namespace Process.NET.Marshaling
                 // Get the pointer
                 Reference = Allocated.BaseAddress;
             }
+
             else
             {
                 // For all other types

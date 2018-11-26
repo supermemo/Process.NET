@@ -11,7 +11,7 @@ namespace Process.NET.Extensions
                             ObjPtr       objPtr,
                             int          offset = 0)
     {
-      int instanceAddr = objPtr.GetInstanceAddress(memory);
+      int instanceAddr = objPtr.ReadInstanceAddress(memory);
 
       return memory.Read<T>(new IntPtr(instanceAddr + objPtr.Offset + offset));
     }

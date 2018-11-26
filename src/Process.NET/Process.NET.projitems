@@ -60,6 +60,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryRegion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Memory\MemoryType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Memory\ObjPtr.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\OffsetPtr.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Memory\ProcessMemory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Modules\IModuleFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Modules\InjectedModule.cs" />
@@ -94,6 +95,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Threads\IThreadFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threads\RemoteThread.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Threads\ThreadFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Memory\IMarshallableValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\DelphiUString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Types\StringAndEncoding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\HandleManipulator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\MemoryHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ModuleHelper.cs" />
