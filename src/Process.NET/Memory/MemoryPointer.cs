@@ -1,11 +1,42 @@
-﻿using System;
+﻿#region License & Metadata
+
+// The MIT License (MIT)
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the 
+// Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+// 
+// 
+// Created On:   2018/06/05 16:02
+// Modified On:  2018/12/09 15:59
+// Modified By:  Alexis
+
+#endregion
+
+
+
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using Process.NET.Extensions;
 using Process.NET.Native.Types;
 
 namespace Process.NET.Memory
@@ -15,10 +46,13 @@ namespace Process.NET.Memory
   {
     #region Properties & Fields - Non-Public
 
-    private byte[]       LastValue            { get; set; }
-    private int          ValueChangedOffset   { get; set; }
-    private Timer        ValueChangedTimer    { get; set; }
-    private List<Func<bool>> ValueChangedHandlers { get; } = new List<Func<bool>>();
+    private byte[]                   LastValue            { get; set; }
+    private int                      ValueChangedOffset   { get; set; }
+    private Timer                    ValueChangedTimer    { get; set; }
+    private Mutex                    ValueChangedMutex    { get; set; } = new Mutex();
+    private List<Func<byte[], bool>> ValueChangedHandlers { get; }      = new List<Func<byte[], bool>>();
+
+    private int Frequency { get; set; } = int.MaxValue;
 
     #endregion
 
@@ -83,6 +117,8 @@ namespace Process.NET.Memory
 
     /// <summary>Gets if the <see cref="MemoryPointer" /> is valid.</summary>
     public virtual bool IsValid => BaseAddress != IntPtr.Zero;
+
+    public bool ValueChangedSuspended { get; private set; }
 
     #endregion
 
@@ -220,9 +256,9 @@ namespace Process.NET.Memory
                            encoding);
     }
 
-    public void RegisterValueChangedEventHandler<T>(Func<bool> eventHandler,
-                                                    int    offset      = 0,
-                                                    int    msFrequency = 200)
+    public void RegisterValueChangedEventHandler<T>(Func<byte[], bool> eventHandler,
+                                                    int                offset      = 0,
+                                                    int                msFrequency = 200)
     {
       RegisterValueChangedEventHandler(eventHandler,
                                        Marshal.SizeOf(typeof(T)),
@@ -230,32 +266,35 @@ namespace Process.NET.Memory
                                        msFrequency);
     }
 
-    public void RegisterValueChangedEventHandler(Func<bool> eventHandler,
-                                                 int    size,
-                                                 int    offset      = 0,
-                                                 int    msFrequency = 200)
+    public void RegisterValueChangedEventHandler(Func<byte[], bool> eventHandler,
+                                                 int                size,
+                                                 int                offset      = 0,
+                                                 int                frequencyMs = 200)
     {
       //if (Process.Native.HasExited)
       //  return;
 
       lock (ValueChangedHandlers)
       {
-        if (ValueChangedHandlers.Count == 0)
+        Frequency = Math.Min(frequencyMs,
+                             Frequency);
+
+        if (ValueChangedTimer == null)
         {
           ValueChangedOffset = offset;
           LastValue = Read(size,
                            ValueChangedOffset);
-          ValueChangedTimer = new Timer(ValueChangedMonitor,
+          ValueChangedTimer = new Timer(CheckValueChanged,
                                         null,
-                                        msFrequency,
-                                        msFrequency);
+                                        frequencyMs,
+                                        Timeout.Infinite);
         }
 
         ValueChangedHandlers.Add(eventHandler);
       }
     }
 
-    public void UnregisterValueChangedEventHandler(Func<bool> eventHandler)
+    public void UnregisterValueChangedEventHandler(Func<byte[], bool> eventHandler)
     {
       lock (ValueChangedHandlers)
       {
@@ -263,10 +302,49 @@ namespace Process.NET.Memory
 
         if (ValueChangedHandlers.Count == 0)
         {
+          StopTimer();
           LastValue = null;
-          ValueChangedTimer.Dispose();
         }
       }
+    }
+
+    public bool SuspendTimer()
+    {
+      ValueChangedMutex.WaitOne();
+
+      try
+      {
+        if (ValueChangedSuspended)
+          return false;
+
+        ValueChangedTimer.Change(Timeout.Infinite,
+                                 Timeout.Infinite);
+        ValueChangedSuspended = true;
+
+        return true;
+      }
+      finally
+      {
+        ValueChangedMutex.ReleaseMutex();
+      }
+    }
+
+    public bool RestartTimer(bool updateValue = false)
+    {
+      if (ValueChangedTimer == null)
+        return false;
+
+      if (updateValue)
+        LastValue = Read(LastValue.Length,
+                         ValueChangedOffset);
+
+      ValueChangedTimer.Change(Frequency,
+                               Timeout.Infinite);
+
+      bool ret = ValueChangedSuspended;
+      ValueChangedSuspended = false;
+
+      return ret;
     }
 
     #endregion
@@ -275,6 +353,14 @@ namespace Process.NET.Memory
 
 
     #region Methods
+
+    private void StopTimer()
+    {
+      ValueChangedTimer?.Dispose();
+      ValueChangedTimer = null;
+
+      Frequency = int.MaxValue;
+    }
 
     /// <summary>Changes the protection of the n next bytes in remote process.</summary>
     /// <param name="handle"></param>
@@ -497,48 +583,60 @@ namespace Process.NET.Memory
     }
 
 
-    private void ValueChangedMonitor(object _)
+    private void CheckValueChanged(object _)
     {
-      byte[] newValue = null;
+      ValueChangedMutex.WaitOne();
 
       try
       {
-        newValue = Read(LastValue.Length,
-                        ValueChangedOffset);
-      }
-      catch (Win32Exception)
-      {
-        if (LastValue == null)
+        if (ValueChangedSuspended)
           return;
-      }
 
-      if (newValue?.SequenceEqual(LastValue) == false)
+        byte[] newValue = null;
+
+        try
+        {
+          newValue = Read(LastValue.Length,
+                          ValueChangedOffset);
+        }
+        catch (Win32Exception)
+        {
+          if (LastValue == null)
+            return;
+        }
+
+        if (newValue?.SequenceEqual(LastValue) == false)
+        {
+          var toRm = new List<Func<byte[], bool>>();
+          LastValue = newValue;
+
+          lock (ValueChangedHandlers)
+            foreach (var handler in ValueChangedHandlers)
+              try
+              {
+                if (handler(newValue))
+                  toRm.Add(handler);
+              }
+              catch { }
+
+          foreach (var handler in toRm)
+            UnregisterValueChangedEventHandler(handler);
+        }
+
+        if (Process.Native.HasExited)
+          lock (ValueChangedHandlers)
+          {
+            StopTimer();
+            ValueChangedHandlers.Clear();
+          }
+
+        else
+          RestartTimer();
+      }
+      finally
       {
-        List<Func<bool>> toRm = new List<Func<bool>>();
-        LastValue = newValue;
-
-        lock (ValueChangedHandlers)
-        {
-          foreach (var handler in ValueChangedHandlers)
-            try
-            {
-              if (handler())
-                toRm.Add(handler);
-            }
-            catch { }
-
-        }
-
-        foreach (var handler in toRm)
-          UnregisterValueChangedEventHandler(handler);
+        ValueChangedMutex.ReleaseMutex();
       }
-
-      if (Process.Native.HasExited)
-        lock (ValueChangedHandlers)
-        {
-          ValueChangedTimer.Dispose();
-          ValueChangedHandlers.Clear();
-        }
     }
 
     #endregion

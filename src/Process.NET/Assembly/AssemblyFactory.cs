@@ -757,7 +757,7 @@ namespace Process.NET.Assembly
     {
       AutoResetEvent ev = new AutoResetEvent(false);
 
-      bool OnSignaled()
+      bool OnSignaled(byte[] newVal)
       {
         ev.Set();
 

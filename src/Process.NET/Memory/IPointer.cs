@@ -7,6 +7,7 @@ namespace Process.NET.Memory
   {
     IntPtr BaseAddress { get; }
     bool   IsValid     { get; }
+    bool ValueChangedSuspended { get; }
 
     byte[] Read(int length,
                 int offset = 0);
@@ -33,15 +34,17 @@ namespace Process.NET.Memory
     void Write<T>(int offset,
                   T   value);
 
-    void RegisterValueChangedEventHandler<T>(Func<bool> eventHandler,
+    void RegisterValueChangedEventHandler<T>(Func<byte[], bool> eventHandler,
                                              int        offset      = 0,
                                              int        msFrequency = 200);
 
-    void RegisterValueChangedEventHandler(Func<bool> eventHandler,
+    void RegisterValueChangedEventHandler(Func<byte[], bool> eventHandler,
                                           int        size,
                                           int        offset      = 0,
-                                          int        msFrequency = 200);
+                                          int        frequencyMs = 200);
 
-    void UnregisterValueChangedEventHandler(Func<bool> eventHandler);
+    void UnregisterValueChangedEventHandler(Func<byte[], bool> eventHandler);
+    bool SuspendTimer();
+    bool RestartTimer(bool updateValue = false);
   }
 }

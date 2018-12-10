@@ -56,6 +56,12 @@ namespace Process.NET.Types
       Text = text;
     }
 
+    public DelphiUString(int length)
+    {
+      Text = new string('\0',
+                        length);
+    }
+
     #endregion
 
 
