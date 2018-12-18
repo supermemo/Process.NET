@@ -23,9 +23,9 @@ namespace Process.NET.Assembly
     protected const int ThreadHijackByteCodeAndDataLength = ThreadHijackByteCodeLength + 5;
 
 #if DEBUG
-    private const int ExecutionTimeout = 600000;
+    public const int ExecutionTimeout = 600000;
 #else
-    private const int ExecutionTimeout = 3000;
+    public const int ExecutionTimeout = 30000;
 #endif
 
     #endregion
@@ -768,7 +768,7 @@ namespace Process.NET.Assembly
       {
         ptr.RegisterValueChangedEventHandler(OnSignaled,
                                              MarshalType<T>.Size);
-
+        System.Diagnostics.Debug.WriteLine($"Executing remote call on thread {executingContext.Thread.Id}");
         executingContext.Thread.Resume();
 
         // TODO: Pass timeout by parameter
