@@ -25,7 +25,7 @@ namespace Process.NET.Assembly
 #if DEBUG
     public const int ExecutionTimeout = 600000;
 #else
-    public const int ExecutionTimeout = 30000;
+    public const int ExecutionTimeout = 10000;
 #endif
 
     #endregion
@@ -872,6 +872,49 @@ namespace Process.NET.Assembly
       return (asmBytes, signalAddr, retAddr);
     }
 
+    /// <summary>
+    ///   Assembles mnemonics and injects the corresponding assembly code into the remote
+    ///   process at the specified address.
+    /// </summary>
+    /// <param name="asmBytes"></param>
+    /// <param name="address">The address where the assembly code is injected.</param>
+    /// <param name="executingThread">Thread to hijack. Will create a new thread if null.</param>
+    private ExecutionContext Inject(byte[]        asmBytes,
+                                    IntPtr        address,
+                                    IRemoteThread executingThread)
+    {
+      int signalAddr = 0;
+      int retAddr    = 0;
+
+      if (executingThread != null)
+      {
+        /*var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+
+        if (Process.Native.Id == currentProcess.Id
+#pragma warning disable CS0618 // Type or member is obsolete
+          && executingThread.Id == AppDomain.GetCurrentThreadId())
+#pragma warning restore CS0618 // Type or member is obsolete
+        {
+
+        }
+
+        else*/
+        (asmBytes, signalAddr, retAddr) = InjectThreadHijack(asmBytes,
+                                                             address,
+                                                             executingThread);
+      }
+
+      Process.Memory.Write(address,
+                           asmBytes);
+
+      return new ExecutionContext
+      {
+        Thread     = executingThread,
+        SignalAddr = new IntPtr(signalAddr),
+        RetAddr    = new IntPtr(retAddr)
+      };
+    }
+
     private static byte[] Combine(params byte[][] arrays)
     {
       byte[] rv     = new byte[arrays.Sum(a => a.Length)];
@@ -888,36 +931,6 @@ namespace Process.NET.Assembly
       }
 
       return rv;
-    }
-
-    /// <summary>
-    ///   Assembles mnemonics and injects the corresponding assembly code into the remote
-    ///   process at the specified address.
-    /// </summary>
-    /// <param name="asmBytes"></param>
-    /// <param name="address">The address where the assembly code is injected.</param>
-    /// <param name="executingThread">Thread to hijack. Will create a new thread if null.</param>
-    private ExecutionContext Inject(byte[]        asmBytes,
-                                    IntPtr        address,
-                                    IRemoteThread executingThread)
-    {
-      int signalAddr = 0;
-      int retAddr    = 0;
-
-      if (executingThread != null)
-        (asmBytes, signalAddr, retAddr) = InjectThreadHijack(asmBytes,
-                                                             address,
-                                                             executingThread);
-
-      Process.Memory.Write(address,
-                           asmBytes);
-
-      return new ExecutionContext
-      {
-        Thread     = executingThread,
-        SignalAddr = new IntPtr(signalAddr),
-        RetAddr    = new IntPtr(retAddr)
-      };
     }
 
     #endregion

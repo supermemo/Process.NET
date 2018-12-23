@@ -11,7 +11,7 @@ namespace Process.NET
 {
   /// <summary>A class that offsers several tools to interact with a process.</summary>
   /// <seealso cref="IProcess" />
-  public class ProcessSharp : IProcess
+  public class ProcessSharp : MarshalByRefObject, IProcess
   {
     #region Properties & Fields - Non-Public
 

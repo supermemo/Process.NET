@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/06/08 14:32
-// Modified On:  2018/11/25 13:26
+// Modified On:  2018/12/22 15:22
 // Modified By:  Alexis
 
 #endregion
@@ -83,6 +83,15 @@ namespace Process.NET.Memory
     {
       return memory.Read<T>(this,
                             secondOffset);
+    }
+
+    public void Write<T>(IMemory memory,
+                         T       value,
+                         int     secondOffset = 0)
+    {
+      memory.Write<T>(this,
+                      value,
+                      secondOffset);
     }
 
     #endregion

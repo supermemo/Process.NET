@@ -38,6 +38,7 @@ using Process.NET.Memory;
 namespace Process.NET.Types
 {
   // http://docwiki.embarcadero.com/RADStudio/Tokyo/en/String_Types_(Delphi)
+  [Serializable]
   public class DelphiUString : IMarshallableValue
   {
     #region Constants & Statics

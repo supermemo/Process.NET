@@ -12,7 +12,7 @@ namespace Process.NET.Windows
     /// <summary>
     ///     Class repesenting a window in the remote process.
     /// </summary>
-    public class RemoteWindow : IEquatable<RemoteWindow>, IWindow
+    public class RemoteWindow : MarshalByRefObject, IEquatable<RemoteWindow>, IWindow
     {
         protected readonly IProcess ProcessPlus;
 

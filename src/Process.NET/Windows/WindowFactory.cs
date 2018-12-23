@@ -8,7 +8,7 @@ namespace Process.NET.Windows
     /// <summary>
     ///     Class providing tools for manipulating windows.
     /// </summary>
-    public class WindowFactory : IWindowFactory
+    public class WindowFactory : MarshalByRefObject, IWindowFactory
     {
         private readonly IProcess _process;
         private IWindow _mainWindow;
