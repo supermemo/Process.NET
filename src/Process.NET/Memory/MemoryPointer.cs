@@ -271,9 +271,6 @@ namespace Process.NET.Memory
                                                  int                offset      = 0,
                                                  int                frequencyMs = 200)
     {
-      //if (Process.Native.HasExited)
-      //  return;
-
       lock (ValueChangedHandlers)
       {
         Frequency = Math.Min(frequencyMs,
