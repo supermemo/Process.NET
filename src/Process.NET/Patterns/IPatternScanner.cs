@@ -2,6 +2,6 @@
 {
     public interface IPatternScanner
     {
-        PatternScanResult Find(IMemoryPattern pattern);
+        PatternScanResult Find(IMemoryPattern pattern, int hintAddr = 0);
     }
 }

@@ -8,6 +8,17 @@ using Process.NET.Windows;
 namespace Process.NET
 {
   /// <summary>A class that offers several tools to interact with a process.</summary>
+  /// <seealso cref="IProcess" />
+  public interface IProcess<TExecDesc> : IProcess
+    where TExecDesc : new()
+  {
+    /// <summary>
+    /// Remote procedures available for execution
+    /// </summary>
+    TExecDesc Procedures { get; }
+  }
+
+  /// <summary>A class that offers several tools to interact with a process.</summary>
   /// <seealso cref="System.IDisposable" />
   public interface IProcess : IDisposable
   {

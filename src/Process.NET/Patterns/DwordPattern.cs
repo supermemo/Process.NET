@@ -39,7 +39,7 @@ namespace Process.NET.Patterns
 
     #region Properties & Fields - Public
 
-    public readonly string PatternText;
+    public string PatternText { get; }
 
     #endregion
 

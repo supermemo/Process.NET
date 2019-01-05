@@ -129,9 +129,14 @@
     <Compile Include="Assembly\Assemblers\Fasm32Assembler.cs" />
     <Compile Include="Assembly\AssemblyFactory.cs" />
     <Compile Include="Assembly\CallingConventions\RegisterCallingConvention.cs" />
+    <Compile Include="Execution\IProcedure.cs" />
+    <Compile Include="Execution\IRemoteExecution.cs" />
+    <Compile Include="Execution\Procedure.cs" />
+    <Compile Include="Execution\RemoteExecution.cs" />
     <Compile Include="Extensions\IProcessEx.cs" />
     <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Extensions\ProcessModuleExtensions.cs" />
+    <Compile Include="Extensions\StringEx.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="Memory\IMarshallableValue.cs" />
     <Compile Include="Memory\MemoryType.cs" />

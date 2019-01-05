@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Process.NET.Execution;
 using Process.NET.Memory;
 using Process.NET.Modules;
 using Process.NET.Native.Types;
@@ -9,6 +11,44 @@ using Process.NET.Windows;
 
 namespace Process.NET
 {
+  /// <summary>A class that offsers several tools to interact with a process.</summary>
+  /// <seealso cref="IProcess" />
+  public class ProcessSharp<TExecDesc> : ProcessSharp, IProcess<TExecDesc>
+    where TExecDesc : new()
+  {
+    public ProcessSharp(System.Diagnostics.Process native,
+                        MemoryType                 type,
+                        bool                       initializeRemoteProcedures = false,
+                        Dictionary<string, int>    cachedAddresses = null)
+      : base(native, type)
+    {
+      RemoteExecution = new RemoteExecution<TExecDesc>(this, initializeRemoteProcedures, cachedAddresses);
+    }
+
+
+    public ProcessSharp(string                     processName,
+                        MemoryType                 type,
+                        bool                       initializeRemoteProcedures = false,
+                        Dictionary<string, int>    cachedAddresses = null)
+      : this(ProcessHelper.FromName(processName),
+          type,
+          initializeRemoteProcedures,
+          cachedAddresses) { }
+
+
+    public ProcessSharp(int                        processId,
+                        MemoryType                 type,
+                        bool                       initializeRemoteProcedures = false,
+                        Dictionary<string, int>    cachedAddresses = null)
+      : this(ProcessHelper.FromProcessId(processId),
+                                                type,
+          initializeRemoteProcedures,
+          cachedAddresses) { }
+
+
+    public TExecDesc Procedures { get; set; }
+  }
+
   /// <summary>A class that offsers several tools to interact with a process.</summary>
   /// <seealso cref="IProcess" />
   public class ProcessSharp : MarshalByRefObject, IProcess
@@ -127,6 +167,11 @@ namespace Process.NET
 
     /// <summary>Factory for manipulating windows.</summary>
     public IWindowFactory WindowFactory { get; set; }
+
+    /// <summary>
+    /// Enable execution of remote procedures by loading IProcedure members from <typeparamref name="TExecDesc"/>
+    /// </summary>
+    public IRemoteExecution RemoteExecution { get; set; }
 
     /// <summary>Gets the <see cref="IProcessModule" /> with the specified module name.</summary>
     /// <param name="moduleName">Name of the module.</param>

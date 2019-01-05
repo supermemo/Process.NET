@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Process.NET.Extensions;
 using Process.NET.Marshaling;
 using Process.NET.Modules;
 
@@ -41,18 +43,18 @@ namespace Process.NET.Patterns
 
     #region Methods Impl
 
-    public PatternScanResult Find(IMemoryPattern pattern)
+    public PatternScanResult Find(IMemoryPattern pattern, int hintAddr = 0)
     {
       switch (pattern.PatternType)
       {
         case MemoryPatternType.Function:
-          return FindFunctionPattern(pattern);
+          return FindFunctionPattern(pattern, hintAddr);
 
         case MemoryPatternType.Data:
-          return FindDataPattern(pattern);
+          return FindDataPattern(pattern, hintAddr);
 
         case MemoryPatternType.Call:
-          return FindCallPattern(pattern);
+          return FindCallPattern(pattern, hintAddr);
 
         default:
           throw new InvalidOperationException($"Invalid MemoryPatternType {pattern.PatternType}");
@@ -66,18 +68,24 @@ namespace Process.NET.Patterns
 
     #region Methods
 
-    private PatternScanResult FindFunctionPattern(IMemoryPattern pattern)
+    private PatternScanResult FindFunctionPattern(IMemoryPattern pattern, int hintAddr = 0)
     {
       var patternData       = Data;
       var patternDataLength = patternData.Length;
+      var patternBytes      = pattern.GetBytes();
+      
+      if (hintAddr > 0)
+        if (hintAddr + patternBytes.Count > patternDataLength
+          || pattern.GetMask()
+                    .AnyEx((m,
+                            b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
+        hintAddr = 0;
 
-      for (var offset = 0; offset < patternDataLength; offset++)
+      for (var offset = hintAddr; offset < patternDataLength; offset++)
       {
-        if (
-          pattern.GetMask()
-                 .Where((m,
-                         b) => m == 'x' && pattern.GetBytes()[b] != patternData[b + offset])
-                 .Any())
+        if (pattern.GetMask()
+                 .AnyEx((m,
+                         b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 
         return new PatternScanResult
@@ -98,18 +106,24 @@ namespace Process.NET.Patterns
       };
     }
 
-    private PatternScanResult FindDataPattern(IMemoryPattern pattern)
+    private PatternScanResult FindDataPattern(IMemoryPattern pattern, int hintAddr = 0)
     {
       var patternData  = Data;
       var patternBytes = pattern.GetBytes();
       var patternMask  = pattern.GetMask();
+      
+      if (hintAddr > 0)
+        if (hintAddr + patternBytes.Count > patternData.Length
+          || patternMask.AnyEx((m,
+                                b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
+          hintAddr = 0;
 
       var result = new PatternScanResult();
 
-      for (var offset = 0; offset < patternData.Length; offset++)
+      for (var offset = hintAddr; offset < patternData.Length; offset++)
       {
-        if (patternMask.Where((m,
-                               b) => m == 'x' && patternBytes[b] != patternData[b + offset]).Any())
+        if (patternMask.AnyEx((m,
+                               b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 
         // If this area is reached, the pattern has been found.
@@ -128,18 +142,24 @@ namespace Process.NET.Patterns
       return result;
     }
 
-    private PatternScanResult FindCallPattern(IMemoryPattern pattern)
+    private PatternScanResult FindCallPattern(IMemoryPattern pattern, int hintAddr = 0)
     {
       var patternData  = Data;
       var patternBytes = pattern.GetBytes();
       var patternMask  = pattern.GetMask();
+      
+      if (hintAddr > 0)
+        if (hintAddr + patternBytes.Count > patternData.Length
+          || patternMask.AnyEx((m,
+                                b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
+          hintAddr = 0;
 
       var result = new PatternScanResult();
 
-      for (var offset = 0; offset < patternData.Length; offset++)
+      for (var offset = hintAddr; offset < patternData.Length; offset++)
       {
-        if (patternMask.Where((m,
-                               b) => m == 'x' && patternBytes[b] != patternData[b + offset]).Any())
+        if (patternMask.AnyEx((m,
+                               b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 
         // If this area is reached, the pattern has been found.
