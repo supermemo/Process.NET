@@ -131,8 +131,8 @@ namespace Process.NET.Execution
 
       if (hasRetType)
       {
-        il.Emit(OpCodes.Stloc_1);
-        il.Emit(OpCodes.Ldloc_1);
+        //il.Emit(OpCodes.Stloc_1);
+        //il.Emit(OpCodes.Ldloc_1);
       }
       else
         il.Emit(OpCodes.Pop);
