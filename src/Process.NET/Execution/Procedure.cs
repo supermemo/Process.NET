@@ -95,7 +95,7 @@ namespace Process.NET.Execution
           if (delArgsType[i].IsClass == false)
             il.Emit(OpCodes.Box, delArgsType[i]);
 
-          il.Emit(OpCodes.Stelem_Ref); //, delArgsType[i]);
+          il.Emit(OpCodes.Stelem_Ref);
         }
       }
       
@@ -129,12 +129,7 @@ namespace Process.NET.Execution
 
       il.Emit(OpCodes.Callvirt, executeMethInfo);
 
-      if (hasRetType)
-      {
-        //il.Emit(OpCodes.Stloc_1);
-        //il.Emit(OpCodes.Ldloc_1);
-      }
-      else
+      if (hasRetType == false)
         il.Emit(OpCodes.Pop);
       
       il.Emit(OpCodes.Ret);
@@ -142,25 +137,12 @@ namespace Process.NET.Execution
       return (TDelegate)(object)dynMeth.CreateDelegate(typeof(TDelegate), this);
     }
 
-    public T testg<T>(IntPtr baseAddr, CallingConventions callConv, IRemoteThread remoteThread, params dynamic[] args)
-    {
-      System.Diagnostics.Debug.WriteLine($"{baseAddr}, {callConv}, {remoteThread}");//, {args.Length}");
-
-      return default(T);
-    }
-
-    public void testng(IntPtr baseAddr, CallingConventions callConv, IRemoteThread remoteThread, params dynamic[] args)
-    {
-      System.Diagnostics.Debug.WriteLine($"{baseAddr}, {callConv}, {remoteThread}");//, {args.Length}");
-      
-    }
-
     private static MethodInfo ExecuteMethodInfo { get; } = typeof(IAssemblyFactory).GetMethods()
           .Where(m => m.Name == "Execute" && m.ReturnType == typeof(IntPtr))
           .Select(x => new { m = x, p = x.GetParameters() })
           .Where(x => x.p.Length == 4
           && x.p[0].ParameterType == typeof(IntPtr)
-          && x.p[1].ParameterType == typeof(Native.Types.CallingConventions)
+          && x.p[1].ParameterType == typeof(CallingConventions)
           && x.p[2].ParameterType == typeof(IRemoteThread)
           && x.p[3].ParameterType == typeof(dynamic[]))
           .FirstOrDefault()?.m;
@@ -170,7 +152,7 @@ namespace Process.NET.Execution
           .Select(x => new { m = x, p = x.GetParameters() })
           .Where(x => x.p.Length == 4
           && x.p[0].ParameterType == typeof(IntPtr)
-          && x.p[1].ParameterType == typeof(Native.Types.CallingConventions)
+          && x.p[1].ParameterType == typeof(CallingConventions)
           && x.p[2].ParameterType == typeof(IRemoteThread)
           && x.p[3].ParameterType == typeof(dynamic[]))
           .FirstOrDefault()?.m;

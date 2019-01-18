@@ -408,14 +408,6 @@ namespace Process.NET.Assembly
       return Inject(asmBytes,
                     address,
                     executingThread);
-
-      //System.Diagnostics.Debug.WriteLine(
-      //  $"Injected code ({address}): "
-      //  + String.Join(" ",
-      //                Process.Memory.Read(address,
-      //                                    asmBytes.Length).Select(b => b.ToString("X2")))
-      //  + $"\nASM:\n{asm}"
-      //);
     }
 
     /// <summary>
@@ -768,7 +760,6 @@ namespace Process.NET.Assembly
       {
         ptr.RegisterValueChangedEventHandler(OnSignaled,
                                              MarshalType<T>.Size);
-        System.Diagnostics.Debug.WriteLine($"Executing remote call on thread {executingContext.Thread.Id}");
         executingContext.Thread.Resume();
 
         // TODO: Pass timeout by parameter
@@ -887,22 +878,9 @@ namespace Process.NET.Assembly
       int retAddr    = 0;
 
       if (executingThread != null)
-      {
-        /*var currentProcess = System.Diagnostics.Process.GetCurrentProcess();
-
-        if (Process.Native.Id == currentProcess.Id
-#pragma warning disable CS0618 // Type or member is obsolete
-          && executingThread.Id == AppDomain.GetCurrentThreadId())
-#pragma warning restore CS0618 // Type or member is obsolete
-        {
-
-        }
-
-        else*/
         (asmBytes, signalAddr, retAddr) = InjectThreadHijack(asmBytes,
                                                              address,
                                                              executingThread);
-      }
 
       Process.Memory.Write(address,
                            asmBytes);
