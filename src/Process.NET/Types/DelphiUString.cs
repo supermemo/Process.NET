@@ -43,7 +43,7 @@ namespace Process.NET.Types
   {
     #region Constants & Statics
 
-    private const int LeftPadding = 16;
+    private const int TextOffset = 16;
 
     #endregion
 
@@ -80,16 +80,16 @@ namespace Process.NET.Types
     #region Methods Impl
 
     /// <inheritdoc />
-    public int GetSize() => Encoding.Unicode.GetByteCount(Text + '\0') + LeftPadding;
+    public int GetSize() => Encoding.Unicode.GetByteCount(Text + '\0') + TextOffset;
 
     /// <inheritdoc />
     public void Write(IAllocatedMemory memory)
     {
-      // Base of allocated chunk ?
+      // Base of allocated chunk (?)
       memory.Write(0,
                    memory.BaseAddress.ToInt32());
 
-      // Code page
+      // Code page (Unicode)
       memory.Write(4,
                    (short)0x04B0);
 
@@ -106,7 +106,7 @@ namespace Process.NET.Types
                    Text.Length);
 
       // Write text
-      memory.Write(LeftPadding,
+      memory.Write(TextOffset,
                    Text,
                    Encoding.Unicode);
     }
@@ -114,7 +114,7 @@ namespace Process.NET.Types
     /// <inheritdoc />
     public IntPtr GetReference(IntPtr baseAddr)
     {
-      return baseAddr + LeftPadding;
+      return baseAddr + TextOffset;
     }
 
     #endregion
