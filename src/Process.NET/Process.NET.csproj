@@ -243,6 +243,8 @@
     <Compile Include="Windows\RemoteWindow.cs" />
     <Compile Include="Windows\Mouse\SendInputMouse.cs" />
     <Compile Include="Windows\WindowFactory.cs" />
+    <Compile Include="Windows\WindowStyles.cs" />
+    <Compile Include="Windows\WindowStyling.cs" />
     <Compile Include="Windows\WndProcEventArgs.cs" />
     <Compile Include="Windows\WndProcHook.cs" />
     <Compile Include="Memory\LocalProcessMemory.cs" />
