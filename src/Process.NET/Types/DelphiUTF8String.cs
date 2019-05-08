@@ -39,7 +39,7 @@ namespace Process.NET.Types
 {
   // http://docwiki.embarcadero.com/RADStudio/Tokyo/en/String_Types_(Delphi)
   [Serializable]
-  public class DelphiUString : IMarshallableValue
+  public class DelphiUTF8String : IMarshallableValue
   {
     #region Constants & Statics
 
@@ -52,12 +52,12 @@ namespace Process.NET.Types
 
     #region Constructors
 
-    public DelphiUString(string text)
+    public DelphiUTF8String(string text)
     {
       Text = text;
     }
 
-    public DelphiUString(int length)
+    public DelphiUTF8String(int length)
     {
       Text = new string('\0',
                         length);
@@ -85,17 +85,29 @@ namespace Process.NET.Types
     /// <inheritdoc />
     public void Write(IAllocatedMemory memory)
     {
+      /*
+type StrRec = record
+      CodePage: Word;
+      ElemSize: Word;
+      refCount: Integer;
+      Len: Integer;
+      case Integer of
+          1: array[0..0] of AnsiChar;
+          2: array[0..0] of WideChar;
+end;
+*/
+
       // Base of allocated chunk (?)
       memory.Write(0,
                    memory.BaseAddress.ToInt32());
 
       // Code page (Unicode)
       memory.Write(4,
-                   (short)0x04B0);
+                   (short)Encoding.UTF8.CodePage); //0x04B0);
 
       // Bytes per character
       memory.Write(6,
-                   (short)2);
+                   (short)1);
 
       // Reference count. Set counter to prevent garbage cleaning.
       memory.Write(8,
@@ -108,7 +120,7 @@ namespace Process.NET.Types
       // Write text
       memory.Write(TextOffset,
                    Text,
-                   Encoding.Unicode);
+                   Encoding.UTF8);
     }
 
     /// <inheritdoc />
