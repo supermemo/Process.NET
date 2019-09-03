@@ -39,10 +39,24 @@ namespace Process.NET.Execution
       Initialized = true;
     }
 
-    private object LoadDescriptionMembers(PatternScanner scanner, Type type)
+    private object LoadDescriptionMembers(PatternScanner scanner, Type type, object parent)
     {
+      object instance;
       Type procItfType = typeof(IProcedure);
-      var instance = Activator.CreateInstance(type);
+
+      if (parent == null)
+        instance = Activator.CreateInstance(type);
+
+      else
+      {
+        var constructor = type.GetConstructor(new[] { parent.GetType() });
+
+        if (constructor != null)
+          instance = constructor.Invoke(new[] { parent });
+
+        else
+          instance = Activator.CreateInstance(type);
+      }
       
       var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 

@@ -33,17 +33,7 @@ namespace Process.NET.Execution
 
     public CallingConventions CallingConvention { get; }
     public IMemoryPattern Pattern { get; }
-
-    private void testdyn(IntPtr a1, IRemoteThread a2, bool a3)
-    {
-      dynamic[] dynargs = new dynamic[3];
-      dynargs[0] = a1;
-      dynargs[1] = a2;
-      dynargs[2] = a3;
-      
-      Factory.Execute(BaseAddr, CallingConvention, null, dynargs);
-    }
-
+    
     private TDelegate GenerateDelegate()
     {
       var thisType = new List<Type> { GetType() };
