@@ -34,7 +34,7 @@ namespace Process.NET.Execution
     public void Initialize()
     {
       var scanner = new PatternScanner(Process.ModuleFactory.MainModule);
-      Process.Procedures = (TExecDesc)LoadDescriptionMembers(scanner, typeof(TExecDesc));
+      Process.Procedures = (TExecDesc)LoadDescriptionMembers(scanner, typeof(TExecDesc), null);
 
       Initialized = true;
     }
@@ -82,7 +82,7 @@ namespace Process.NET.Execution
 
         else if (prop.PropertyType.GetTypeInfo().IsClass)
         {
-          var subClassInst = LoadDescriptionMembers(scanner, prop.PropertyType);
+          var subClassInst = LoadDescriptionMembers(scanner, prop.PropertyType, instance);
 
           prop.SetValue(instance, subClassInst);
         }
