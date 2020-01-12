@@ -12,9 +12,9 @@ namespace Process.NET.Execution
   /// </summary>
   /// <typeparam name="TExecDesc"></typeparam>
   public class RemoteExecution<TExecDesc> : IRemoteExecution
-    where TExecDesc : new()
+    where TExecDesc : class
   {
-    public RemoteExecution(ProcessSharp<TExecDesc> process, bool initialize, Dictionary<string, int> cachedAddresses)
+    public RemoteExecution(ProcessSharp<TExecDesc> process, bool initialize, Dictionary<string, int> cachedAddresses, object[] procedureConstructorParams)
     {
       Process = process;
       CachedAddresses = cachedAddresses ?? new Dictionary<string, int>();
@@ -22,7 +22,7 @@ namespace Process.NET.Execution
                                     new Fasm32Assembler());
 
       if (initialize)
-        Initialize();
+        Initialize(procedureConstructorParams);
     }
 
     public bool Initialized { get; private set; } = false;
@@ -31,32 +31,31 @@ namespace Process.NET.Execution
     public Dictionary<string, int> CachedAddresses { get; }
     public IAssemblyFactory Factory { get; set; }
 
-    public void Initialize()
+    public void Initialize(params object[] procedureConstructorParams)
     {
       var scanner = new PatternScanner(Process.ModuleFactory.MainModule);
-      Process.Procedures = (TExecDesc)LoadDescriptionMembers(scanner, typeof(TExecDesc), null);
+      Process.Procedures = (TExecDesc)LoadDescriptionMembers(scanner, typeof(TExecDesc), null, null, procedureConstructorParams);
 
       Initialized = true;
     }
 
-    private object LoadDescriptionMembers(PatternScanner scanner, Type type, object parent)
+    private object LoadDescriptionMembers(PatternScanner scanner, Type type, object parent, object instance, object[] procedureConstructorParams = null)
     {
-      object instance;
       Type procItfType = typeof(IProcedure);
 
       if (parent == null)
-        instance = Activator.CreateInstance(type);
+        instance = Activator.CreateInstance(type, procedureConstructorParams);
 
-      else
-      {
-        var constructor = type.GetConstructor(new[] { parent.GetType() });
+      //else if (instance == null)
+      //{
+      //  var constructor = type.GetConstructor(new[] { parent.GetType() });
 
-        if (constructor != null)
-          instance = constructor.Invoke(new[] { parent });
+      //  if (constructor != null)
+      //    instance = constructor.Invoke(new[] { parent });
 
-        else
-          instance = Activator.CreateInstance(type);
-      }
+      //  else
+      //    instance = Activator.CreateInstance(type);
+      //}
       
       var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
@@ -82,9 +81,13 @@ namespace Process.NET.Execution
 
         else if (prop.PropertyType.GetTypeInfo().IsClass)
         {
-          var subClassInst = LoadDescriptionMembers(scanner, prop.PropertyType, instance);
+          var propInstance = prop.GetValue(instance);
 
-          prop.SetValue(instance, subClassInst);
+          if (propInstance != null)
+            LoadDescriptionMembers(scanner, prop.PropertyType, instance, propInstance);
+
+          //if (propInstance == null)
+          //  prop.SetValue(instance, subClassInst);
         }
       }
 

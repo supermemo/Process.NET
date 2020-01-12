@@ -14,36 +14,41 @@ namespace Process.NET
   /// <summary>A class that offsers several tools to interact with a process.</summary>
   /// <seealso cref="IProcess" />
   public class ProcessSharp<TExecDesc> : ProcessSharp, IProcess<TExecDesc>
-    where TExecDesc : new()
+    where TExecDesc : class
   {
     public ProcessSharp(System.Diagnostics.Process native,
                         MemoryType                 type,
                         bool                       initializeRemoteProcedures = false,
-                        Dictionary<string, int>    cachedAddresses = null)
+                        Dictionary<string, int>    cachedAddresses = null,
+                        params object[]            procedureConstructorParams)
       : base(native, type)
     {
-      RemoteExecution = new RemoteExecution<TExecDesc>(this, initializeRemoteProcedures, cachedAddresses);
+      RemoteExecution = new RemoteExecution<TExecDesc>(this, initializeRemoteProcedures, cachedAddresses, procedureConstructorParams);
     }
 
 
     public ProcessSharp(string                     processName,
                         MemoryType                 type,
                         bool                       initializeRemoteProcedures = false,
-                        Dictionary<string, int>    cachedAddresses = null)
+                        Dictionary<string, int>    cachedAddresses = null,
+                        params object[]            procedureConstructorParams)
       : this(ProcessHelper.FromName(processName),
           type,
           initializeRemoteProcedures,
-          cachedAddresses) { }
+          cachedAddresses,
+          procedureConstructorParams) { }
 
 
     public ProcessSharp(int                        processId,
                         MemoryType                 type,
                         bool                       initializeRemoteProcedures = false,
-                        Dictionary<string, int>    cachedAddresses = null)
+                        Dictionary<string, int>    cachedAddresses = null,
+                        params object[]            procedureConstructorParams)
       : this(ProcessHelper.FromProcessId(processId),
-                                                type,
+          type,
           initializeRemoteProcedures,
-          cachedAddresses) { }
+          cachedAddresses,
+          procedureConstructorParams) { }
 
 
     public TExecDesc Procedures { get; set; }

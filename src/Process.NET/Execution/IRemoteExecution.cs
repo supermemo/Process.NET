@@ -7,6 +7,6 @@ namespace Process.NET.Execution
     bool Initialized { get; }
     IAssemblyFactory Factory { get; }
 
-    void Initialize();
+    void Initialize(params object[] procedureConstructorParams);
   }
 }

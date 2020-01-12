@@ -10,7 +10,7 @@ namespace Process.NET
   /// <summary>A class that offers several tools to interact with a process.</summary>
   /// <seealso cref="IProcess" />
   public interface IProcess<TExecDesc> : IProcess
-    where TExecDesc : new()
+    where TExecDesc : class
   {
     /// <summary>
     /// Remote procedures available for execution
