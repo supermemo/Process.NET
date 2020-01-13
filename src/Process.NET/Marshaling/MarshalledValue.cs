@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
 using Process.NET.Memory;
 using Process.NET.Utilities;
@@ -13,19 +12,19 @@ namespace Process.NET.Marshaling
     public class MarshalledValue<T> : IMarshalledValue
     {
         /// <summary>
-        ///     The reference of the <see cref="Process" /> object.
+        ///     The reference of the <see cref="_process" /> object.
         /// </summary>
-        protected readonly IProcess Process;
+        protected readonly IProcess _process;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MarshalledValue{T}" /> class.
         /// </summary>
-        /// <param name="process">The reference of the <see cref="Process" /> object.</param>
+        /// <param name="process">The reference of the <see cref="_process" /> object.</param>
         /// <param name="value">The value to marshal.</param>
         public MarshalledValue(IProcess process, T value)
         {
             // Save the parameters
-            Process = process;
+            _process = process;
             Value = value;
             // Marshal the value
             Marshal();
@@ -74,7 +73,7 @@ namespace Process.NET.Marshaling
                 IMarshallableValue marshalVal = Value as IMarshallableValue;
 
                 // Allocate memory in the remote process
-                Allocated = Process.MemoryFactory.Allocate(Randomizer.GenerateString(), marshalVal.GetSize());
+                Allocated = _process.MemoryFactory.Allocate(Randomizer.GenerateString(), marshalVal.GetSize());
 
                 // Write the value(s)
                 marshalVal.Write(Allocated);
@@ -89,7 +88,7 @@ namespace Process.NET.Marshaling
                 var text = Value.ToString();
 
                 // Allocate memory in the remote process (string + '\0')
-                Allocated = Process.MemoryFactory.Allocate(Randomizer.GenerateString(), text.Length + 1);
+                Allocated = _process.MemoryFactory.Allocate(Randomizer.GenerateString(), text.Length + 1);
                 // Write the value
                 Allocated.Write(0, text, Encoding.UTF8);
                 // Get the pointer
@@ -112,7 +111,7 @@ namespace Process.NET.Marshaling
                     // the remote process to store the value and get its pointer
 
                     // Allocate memory in the remote process
-                    Allocated = Process.MemoryFactory.Allocate(Randomizer.GenerateString(), MarshalType<T>.Size);
+                    Allocated = _process.MemoryFactory.Allocate(Randomizer.GenerateString(), MarshalType<T>.Size);
                     // Write the value
                     Allocated.Write(0, Value);
                     // Get the pointer

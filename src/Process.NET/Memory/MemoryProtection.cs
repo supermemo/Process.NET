@@ -9,7 +9,7 @@ namespace Process.NET.Memory
     /// </summary>
     public class MemoryProtection : IDisposable
     {
-        protected readonly SafeMemoryHandle Handle;
+        protected readonly SafeMemoryHandle _handle;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="MemoryProtection" /> class.
@@ -24,14 +24,14 @@ namespace Process.NET.Memory
             bool mustBeDisposed = true)
         {
             // Save the parameters
-            Handle = handle;
+            _handle = handle;
             BaseAddress = baseAddress;
             NewProtection = protection;
             Size = size;
             MustBeDisposed = mustBeDisposed;
 
             // Change the memory protection
-            OldProtection = MemoryHelper.ChangeProtection(Handle, baseAddress, size, protection);
+            OldProtection = MemoryHelper.ChangeProtection(_handle, baseAddress, size, protection);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Process.NET.Memory
         public virtual void Dispose()
         {
             // Restore the memory protection
-            MemoryHelper.ChangeProtection(Handle, BaseAddress, Size, OldProtection);
+            MemoryHelper.ChangeProtection(_handle, BaseAddress, Size, OldProtection);
             // Avoid the finalizer 
             GC.SuppressFinalize(this);
         }

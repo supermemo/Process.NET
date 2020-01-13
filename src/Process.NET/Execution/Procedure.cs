@@ -7,6 +7,7 @@ using Process.NET.Assembly;
 using Process.NET.Patterns;
 using Process.NET.Threads;
 using CallingConventions = Process.NET.Native.Types.CallingConventions;
+// ReSharper disable StaticMemberInGenericType
 
 namespace Process.NET.Execution
 {

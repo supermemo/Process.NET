@@ -15,16 +15,16 @@ namespace Process.NET.Marshaling
         public unsafe delegate void* GetUnsafePtrDelegate(ref T value);
 
         /// <summary> The size of the Type </summary>
-        public static int Size;
+        public static readonly int Size;
 
         /// <summary> The real, underlying type. </summary>
-        public static Type RealType;
+        public static readonly Type RealType;
 
         /// <summary> The type code </summary>
-        public static TypeCode TypeCode;
+        public static readonly TypeCode TypeCode;
 
         /// <summary> True if this type requires the Marshaler to map variables. (No direct pointer dereferencing) </summary>
-        public static bool TypeRequiresMarshal;
+        public static readonly bool TypeRequiresMarshal;
 
         public static readonly GetUnsafePtrDelegate GetUnsafePtr;
 

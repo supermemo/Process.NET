@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Process.NET.Marshaling;
+// ReSharper disable InconsistentNaming
+// ReSharper disable InvalidXmlDocComment
 
 namespace Process.NET.Native.Types
 {

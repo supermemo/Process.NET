@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Process.NET.Marshaling;
 using Process.NET.Native;
 using Process.NET.Native.Types;

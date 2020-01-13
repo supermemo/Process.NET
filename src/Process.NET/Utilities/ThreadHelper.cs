@@ -30,9 +30,8 @@ namespace Process.NET.Utilities
             HandleManipulator.ValidateAsArgument(startAddress, "startAddress");
 
             // Create the remote thread
-            int threadId;
             var ret = Kernel32.CreateRemoteThread(processHandle, IntPtr.Zero, 0, startAddress, parameter, creationFlags,
-                out threadId);
+                out _);
 
             // If the thread is created
             if (!ret.IsClosed && !ret.IsInvalid)

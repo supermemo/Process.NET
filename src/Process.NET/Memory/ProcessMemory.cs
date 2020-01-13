@@ -13,7 +13,7 @@ namespace Process.NET.Memory
         /// <summary>
         ///     The open handle to the process which contains the memory of interest,
         /// </summary>
-        protected readonly SafeMemoryHandle Handle;
+        protected readonly SafeMemoryHandle _handle;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ProcessMemory" /> class.
@@ -21,7 +21,7 @@ namespace Process.NET.Memory
         /// <param name="handle">The open handle to the process which contains the memory of interest.</param>
         protected ProcessMemory(SafeMemoryHandle handle)
         {
-            Handle = handle;
+            _handle = handle;
         }
 
         /// <summary>

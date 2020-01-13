@@ -7,9 +7,9 @@ namespace Process.NET.Applied
     [SuppressMessage("ReSharper", "LoopCanBePartlyConvertedToQuery")]
     public class AppliedManager<T> : IAppliedManager<T> where T : IApplied
     {
-        protected readonly Dictionary<string, T> InternalItems = new Dictionary<string, T>();
+        protected readonly Dictionary<string, T> _internalItems = new Dictionary<string, T>();
 
-        public IReadOnlyDictionary<string, T> Items => InternalItems;
+        public IReadOnlyDictionary<string, T> Items => _internalItems;
 
         public void Disable(T item)
         {
@@ -21,35 +21,35 @@ namespace Process.NET.Applied
             throw new NotImplementedException();
         }
 
-        public T this[string key] => InternalItems[key];
+        public T this[string key] => _internalItems[key];
 
         public void EnableAll()
         {
-            foreach (var item in InternalItems)
+            foreach (var item in _internalItems)
                 if (!item.Value.IsEnabled)
                     item.Value.Disable();
         }
 
         public void DisableAll()
         {
-            foreach (var item in InternalItems)
+            foreach (var item in _internalItems)
                 if (item.Value.IsEnabled)
                     item.Value.Disable();
         }
 
         public void Remove(string name)
         {
-            if (!InternalItems.ContainsKey(name))
+            if (!_internalItems.ContainsKey(name))
                 return;
 
             try
             {
-                InternalItems[name].Dispose();
+                _internalItems[name].Dispose();
             }
 
             finally
             {
-                InternalItems.Remove(name);
+                _internalItems.Remove(name);
             }
         }
 
@@ -60,14 +60,14 @@ namespace Process.NET.Applied
 
         public void RemoveAll()
         {
-            foreach (var item in InternalItems)
+            foreach (var item in _internalItems)
                 item.Value.Dispose();
-            InternalItems.Clear();
+            _internalItems.Clear();
         }
 
         public void Add(T applicable)
         {
-            InternalItems.Add(applicable.Identifier, applicable);
+            _internalItems.Add(applicable.Identifier, applicable);
         }
 
         public void Add(IEnumerable<T> applicableRange)

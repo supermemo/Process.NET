@@ -1,9 +1,5 @@
 ﻿using Process.NET.Native;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Process.NET.Windows
 {
@@ -16,10 +12,10 @@ namespace Process.NET.Windows
     private const int SWP_NOMOVE = 0x2;
     private const int SWP_FRAMECHANGED = 0x20;
 
-    public static void MakeWindowTitleless(IntPtr MainWindowHandle)
+    public static void MakeWindowTitleless(IntPtr mainWindowHandle)
     {
       // Style
-      int style = (int)User32.GetWindowLong32(MainWindowHandle, GWL_STYLE);
+      int style = (int)User32.GetWindowLong32(mainWindowHandle, GWL_STYLE);
 
       style = style & ~(int)WindowStyles.WS_CAPTION;
       style = style & ~(int)WindowStyles.WS_SYSMENU;
@@ -27,7 +23,7 @@ namespace Process.NET.Windows
       style = style & ~(int)WindowStyles.WS_MINIMIZE;
       style = style & ~(int)WindowStyles.WS_MAXIMIZEBOX;
 
-      User32.SetWindowLong32(MainWindowHandle, GWL_STYLE, new IntPtr(style));
+      User32.SetWindowLong32(mainWindowHandle, GWL_STYLE, new IntPtr(style));
 
       // ExStyle
       //style = (int)Kernel32.GetWindowLong32(MainWindowHandle, GWL_EXSTYLE);

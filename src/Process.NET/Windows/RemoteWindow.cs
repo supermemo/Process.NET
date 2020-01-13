@@ -6,6 +6,7 @@ using Process.NET.Threads;
 using Process.NET.Utilities;
 using Process.NET.Windows.Keyboard;
 using Process.NET.Windows.Mouse;
+// ReSharper disable InvalidXmlDocComment
 
 namespace Process.NET.Windows
 {
@@ -14,7 +15,7 @@ namespace Process.NET.Windows
     /// </summary>
     public class RemoteWindow : MarshalByRefObject, IEquatable<RemoteWindow>, IWindow
     {
-        protected readonly IProcess ProcessPlus;
+        protected readonly IProcess _processPlus;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RemoteWindow" /> class.
@@ -24,7 +25,7 @@ namespace Process.NET.Windows
         public RemoteWindow(IProcess processPlus, IntPtr handle)
         {
             // Save the parameters
-            ProcessPlus = processPlus;
+            _processPlus = processPlus;
             Handle = handle;
             // Create the tools
             Keyboard = new MessageKeyboard(this);
@@ -43,7 +44,7 @@ namespace Process.NET.Windows
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(ProcessPlus, other.ProcessPlus) && Handle.Equals(other.Handle);
+            return Equals(_processPlus, other._processPlus) && Handle.Equals(other.Handle);
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace Process.NET.Windows
         /// </summary>
         public IEnumerable<IWindow> Children
         {
-            get { return ChildrenHandles.Select(handle => new RemoteWindow(ProcessPlus, handle)); }
+            get { return ChildrenHandles.Select(handle => new RemoteWindow(_processPlus, handle)); }
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace Process.NET.Windows
         /// <summary>
         ///     Gets if this is the main window.
         /// </summary>
-        public bool IsMainWindow => ProcessPlus.Native.MainWindowHandle == Handle;
+        public bool IsMainWindow => _processPlus.Native.MainWindowHandle == Handle;
 
         /// <summary>
         ///     Tools for managing a virtual keyboard in the window.
@@ -134,7 +135,7 @@ namespace Process.NET.Windows
         /// <summary>
         ///     Gets the thread of the window.
         /// </summary>
-        public IRemoteThread Thread => ProcessPlus.ThreadFactory.GetThreadById(WindowHelper.GetWindowThreadId(Handle));
+        public IRemoteThread Thread => _processPlus.ThreadFactory.GetThreadById(WindowHelper.GetWindowThreadId(Handle));
 
         /// <summary>
         ///     Gets or sets the width of the element.
@@ -278,7 +279,7 @@ namespace Process.NET.Windows
         {
             unchecked
             {
-                var hashCode = ProcessPlus?.GetHashCode() ?? 0;
+                var hashCode = _processPlus?.GetHashCode() ?? 0;
                 hashCode = (hashCode*397) ^ Handle.GetHashCode();
                 return hashCode;
             }

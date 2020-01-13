@@ -305,7 +305,6 @@ namespace Process.NET.Assembly
     ///   specified address.
     /// </summary>
     /// <param name="address">The address where the assembly code is located.</param>
-    /// <param name="executingThread">Thread to hijack. Will create a new thread if null.</param>
     /// <param name="parameter">The parameter used to execute the assembly code.</param>
     /// <returns>
     ///   The return value is an asynchronous operation that return the exit code of the thread
@@ -323,7 +322,6 @@ namespace Process.NET.Assembly
     ///   specified address.
     /// </summary>
     /// <param name="address">The address where the assembly code is located.</param>
-    /// <param name="executingThread">Thread to hijack. Will create a new thread if null.</param>
     /// <param name="parameter">The parameter used to execute the assembly code.</param>
     /// <returns>
     ///   The return value is an asynchronous operation that return the exit code of the thread
@@ -744,8 +742,7 @@ namespace Process.NET.Assembly
 
     #region Methods
 
-    private T WaitHijackedThreadSignal<T>(IntPtr           address,
-                                          ExecutionContext executingContext)
+    private T WaitHijackedThreadSignal<T>(ExecutionContext executingContext)
     {
       AutoResetEvent ev = new AutoResetEvent(false);
 
@@ -789,13 +786,12 @@ namespace Process.NET.Assembly
 
       else
       {
-        return WaitHijackedThreadSignal<T>(address,
-                                           executionContext);
+        return WaitHijackedThreadSignal<T>(executionContext);
       }
     }
 
     private (string asm, IntPtr assembleAddr) AdjustAsm(string        asm,
-                                                        IntPtr        Address,
+                                                        IntPtr        address,
                                                         IRemoteThread executingThread)
     {
       if (executingThread != null)
@@ -811,10 +807,10 @@ namespace Process.NET.Assembly
 
         // TODO: Replace any retn inside asm with a jmp
 
-        Address = new IntPtr(Address.ToInt32() + ThreadHijackBytePreCodeLength);
+        address = new IntPtr(address.ToInt32() + ThreadHijackBytePreCodeLength);
       }
 
-      return (asm, Address);
+      return (asm, address);
     }
 
     private (byte[] asmBytes, int signalAddr, int retAddr) InjectThreadHijack(

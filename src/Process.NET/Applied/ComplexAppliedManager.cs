@@ -9,7 +9,7 @@ namespace Process.NET.Applied
 
         public void Disable(string name, bool dueToRules)
         {
-            InternalItems[name].Disable(dueToRules);
+            _internalItems[name].Disable(dueToRules);
         }
 
         public void Enable(T item, bool dueToRules)
@@ -19,18 +19,18 @@ namespace Process.NET.Applied
 
         public void Enable(string name, bool dueToRules)
         {
-            InternalItems[name].Enable(dueToRules);
+            _internalItems[name].Enable(dueToRules);
         }
 
         public void DisableAll(bool dueToRules)
         {
-            foreach (var value in InternalItems.Values)
+            foreach (var value in _internalItems.Values)
                 value.Disable(dueToRules);
         }
 
         public void EnableAll(bool dueToRules)
         {
-            foreach (var value in InternalItems.Values)
+            foreach (var value in _internalItems.Values)
                 value.Enable(dueToRules);
         }
     }

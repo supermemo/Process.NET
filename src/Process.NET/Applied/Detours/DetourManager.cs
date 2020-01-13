@@ -1,7 +1,6 @@
 ﻿using System;
 using Process.NET.Extensions;
 using Process.NET.Memory;
-using Process.NET.Utilities;
 
 namespace Process.NET.Applied.Detours
 {
@@ -58,11 +57,11 @@ namespace Process.NET.Applied.Detours
                 throw new Exception(
                     "The new target delegate does not have the proper UnmanagedFunctionPointer attribute!");
 
-            if (InternalItems.ContainsKey(name))
+            if (_internalItems.ContainsKey(name))
                 throw new ArgumentException($"The {name} detour already exists!", nameof(name));
 
-            InternalItems[name] = new Detour(target, newTarget, name, ProcessPlus, ignoreAntiCheatRules);
-            return InternalItems[name];
+            _internalItems[name] = new Detour(target, newTarget, name, ProcessPlus, ignoreAntiCheatRules);
+            return _internalItems[name];
         }
 
         /// <summary>
@@ -83,8 +82,8 @@ namespace Process.NET.Applied.Detours
             bool ignoreAntiCheatRules = false)
         {
             Create(target, newTarget, name, ignoreAntiCheatRules);
-            InternalItems[name].Enable();
-            return InternalItems[name];
+            _internalItems[name].Enable();
+            return _internalItems[name];
         }
     }
 }

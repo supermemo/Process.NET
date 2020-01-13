@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Process.NET.Extensions;
 using Process.NET.Memory;
-using Process.NET.Utilities;
 
 namespace Process.NET.Applied.Detours
 {
@@ -25,7 +24,7 @@ namespace Process.NET.Applied.Detours
         /// <param name="target">The target delegate.</param>
         /// <param name="hook">The hook delegate.</param>
         /// <param name="identifier"></param>
-        /// <param name="memory">The <see cref="MemoryPlus" /> instance.</param>
+        /// <param name="memory">The <see cref="memory" /> instance.</param>
         /// <param name="ignoreRules"></param>
         public Detour(Delegate target, Delegate hook, string identifier, IMemory memory,
             bool ignoreRules = false)

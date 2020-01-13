@@ -61,7 +61,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     Injects the specified module into the address space of the remote process.
         /// </summary>
-        /// <param name="memorySharp">The reference of the <see cref="MemorySharp" /> object.</param>
+        /// <param name="memorySharp">The reference of the <see cref="ProcessSharp" /> object.</param>
         /// <param name="path">
         ///     The path of the module. This can be either a library module (a .dll file) or an executable module
         ///     (an .exe file).

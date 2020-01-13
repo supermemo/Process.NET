@@ -18,8 +18,8 @@ namespace Process.NET.Windows.Keyboard
 
         private HookProc _hookproc;
         private bool _ispaused;
-        public KeyDownEventDelegate KeyDownEvent = delegate { };
-        public KeyUpEventDelegate KeyUpEvent = delegate { };
+        public readonly KeyDownEventDelegate _keyDownEvent = delegate { };
+        public readonly KeyUpEventDelegate _keyUpEvent = delegate { };
 
         public KeyboardHook(string name)
         {
@@ -86,17 +86,17 @@ namespace Process.NET.Windows.Keyboard
 
         private int HookCallback(int code, IntPtr wParam, ref KBDLLHOOKSTRUCT lParam)
         {
-            var result = 0;
+            int result;
 
             try
             {
                 if (!IsPaused && code >= 0)
                 {
                     if (wParam.ToInt32() == WmSyskeydown || wParam.ToInt32() == WmKeydown)
-                        KeyDownEvent(new KeyboardHookEventArgs(lParam));
+                        _keyDownEvent(new KeyboardHookEventArgs(lParam));
 
                     if (wParam.ToInt32() == WmSyskeyup || wParam.ToInt32() == WmKeyup)
-                        KeyUpEvent(new KeyboardHookEventArgs(lParam));
+                        _keyUpEvent(new KeyboardHookEventArgs(lParam));
                 }
             }
             finally
@@ -138,7 +138,7 @@ namespace Process.NET.Windows.Keyboard
         private const int WmKeyup = 0x101;
 
         private const int WmSyskeydown = 0x0104;
-        public readonly int WmSyskeyup = 0x105;
+        public const int WmSyskeyup = 0x105;
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);

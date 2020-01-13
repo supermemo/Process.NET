@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Process.NET.Extensions;
 using Process.NET.Marshaling;
 using Process.NET.Modules;
@@ -73,19 +71,19 @@ namespace Process.NET.Patterns
       var patternData       = Data;
       var patternDataLength = patternData.Length;
       var patternBytes      = pattern.GetBytes();
-      
+
       if (hintAddr > 0)
         if (hintAddr + patternBytes.Count > patternDataLength
           || pattern.GetMask()
-                    .AnyEx((m,
-                            b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
-        hintAddr = 0;
+                    // ReSharper disable once AccessToModifiedClosure
+                    .AnyEx((m, b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
+          hintAddr = 0;
 
       for (var offset = hintAddr; offset < patternDataLength; offset++)
       {
         if (pattern.GetMask()
-                 .AnyEx((m,
-                         b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
+                   // ReSharper disable once AccessToModifiedClosure
+                   .AnyEx((m, b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 
         return new PatternScanResult
@@ -115,6 +113,7 @@ namespace Process.NET.Patterns
       if (hintAddr > 0)
         if (hintAddr + patternBytes.Count > patternData.Length
           || patternMask.AnyEx((m,
+                                // ReSharper disable once AccessToModifiedClosure
                                 b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
           hintAddr = 0;
 
@@ -123,6 +122,7 @@ namespace Process.NET.Patterns
       for (var offset = hintAddr; offset < patternData.Length; offset++)
       {
         if (patternMask.AnyEx((m,
+                               // ReSharper disable once AccessToModifiedClosure
                                b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 
@@ -151,6 +151,7 @@ namespace Process.NET.Patterns
       if (hintAddr > 0)
         if (hintAddr + patternBytes.Count > patternData.Length
           || patternMask.AnyEx((m,
+                                // ReSharper disable once AccessToModifiedClosure
                                 b) => m == 'x' && patternBytes[b] != patternData[b + hintAddr]))
           hintAddr = 0;
 
@@ -159,6 +160,7 @@ namespace Process.NET.Patterns
       for (var offset = hintAddr; offset < patternData.Length; offset++)
       {
         if (patternMask.AnyEx((m,
+                               // ReSharper disable once AccessToModifiedClosure
                                b) => m == 'x' && patternBytes[b] != patternData[b + offset]))
           continue;
 

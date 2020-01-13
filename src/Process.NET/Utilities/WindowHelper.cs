@@ -28,6 +28,7 @@ namespace Process.NET.Utilities
             HandleManipulator.ValidateAsArgument(windowHandle, "windowHandle");
 
             // Get the window class name
+            // ReSharper disable once ConfusingCharAsIntegerInConstructor
             var stringBuilder = new StringBuilder(char.MaxValue);
             if (User32.GetClassName(windowHandle, stringBuilder, stringBuilder.Capacity) == 0)
                 throw new Win32Exception("Couldn't get the class name of the window or the window has no class name.");
@@ -139,8 +140,7 @@ namespace Process.NET.Utilities
             HandleManipulator.ValidateAsArgument(windowHandle, "windowHandle");
 
             // Get the thread id
-            int trash;
-            return User32.GetWindowThreadProcessId(windowHandle, out trash);
+            return User32.GetWindowThreadProcessId(windowHandle, out _);
         }
 
         /// <summary>

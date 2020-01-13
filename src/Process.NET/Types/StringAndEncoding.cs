@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
-namespace Process.NET.Utilities
+namespace Process.NET.Types
 {
   public class StringAndEncoding
   {

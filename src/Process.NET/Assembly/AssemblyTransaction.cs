@@ -17,10 +17,10 @@ namespace Process.NET.Assembly
     private readonly IRemoteThread    _executingThread;
 
     /// <summary>The exit code of the thread created to execute the assembly code.</summary>
-    protected IntPtr ExitCode;
+    protected IntPtr _exitCode;
 
     /// <summary>The builder contains all the mnemonics inserted by the user.</summary>
-    protected StringBuilder Mnemonics;
+    protected StringBuilder _mnemonics;
 
     #endregion
 
@@ -47,7 +47,7 @@ namespace Process.NET.Assembly
       IsAutoExecuted   = autoExecute;
       Address          = address;
       // Initialize the string builder
-      Mnemonics = new StringBuilder();
+      _mnemonics = new StringBuilder();
     }
 
     /// <summary>Initializes a new instance of the <see cref="AssemblyTransaction" /> class.</summary>
@@ -72,18 +72,18 @@ namespace Process.NET.Assembly
       if (Address != IntPtr.Zero)
         // If the assembly code must be executed
         if (IsAutoExecuted)
-          ExitCode = _assemblyFactory.InjectAndExecute<IntPtr>(Mnemonics.ToString(),
+          _exitCode = _assemblyFactory.InjectAndExecute<IntPtr>(_mnemonics.ToString(),
                                                                Address,
                                                                _executingThread);
         // Else the assembly code is just injected
         else
-          _assemblyFactory.Inject(Mnemonics.ToString(),
+          _assemblyFactory.Inject(_mnemonics.ToString(),
                                   Address,
                                   _executingThread);
 
       // If no pointer was specified and the code assembly code must be executed
       if (Address == IntPtr.Zero && IsAutoExecuted)
-        ExitCode = _assemblyFactory.InjectAndExecute<IntPtr>(Mnemonics.ToString(),
+        _exitCode = _assemblyFactory.InjectAndExecute<IntPtr>(_mnemonics.ToString(),
                                                              _executingThread);
     }
 
@@ -116,7 +116,7 @@ namespace Process.NET.Assembly
     public void AddLine(string          asm,
                         params object[] args)
     {
-      Mnemonics.AppendLine(string.Format(asm,
+      _mnemonics.AppendLine(string.Format(asm,
                                          args));
     }
 
@@ -124,20 +124,20 @@ namespace Process.NET.Assembly
     /// <returns>An array of bytes containing the assembly code.</returns>
     public byte[] Assemble()
     {
-      return _assemblyFactory.Assembler.Assemble(Mnemonics.ToString());
+      return _assemblyFactory.Assembler.Assemble(_mnemonics.ToString());
     }
 
     /// <summary>Removes all mnemonics from the transaction.</summary>
     public void Clear()
     {
-      Mnemonics.Clear();
+      _mnemonics.Clear();
     }
 
     /// <summary>Gets the termination status of the thread.</summary>
     public T GetExitCode<T>()
     {
       return MarshalType<T>.PtrToObject(_assemblyFactory.Process,
-                                        ExitCode);
+                                        _exitCode);
     }
 
     /// <summary>Inserts a mnemonic to the transaction at a given index.</summary>
@@ -148,7 +148,7 @@ namespace Process.NET.Assembly
                            string          asm,
                            params object[] args)
     {
-      Mnemonics.Insert(index,
+      _mnemonics.Insert(index,
                        string.Format(asm,
                                      args));
     }

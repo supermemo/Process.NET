@@ -8,6 +8,7 @@ using Process.NET.Marshaling;
 using Process.NET.Native.Types;
 using Process.NET.Utilities;
 using ThreadState = System.Diagnostics.ThreadState;
+// ReSharper disable InvalidXmlDocComment
 
 namespace Process.NET.Threads
 {
@@ -19,7 +20,7 @@ namespace Process.NET.Threads
         private readonly IMarshalledValue _parameter;
         private readonly Task _parameterCleaner;
 
-        protected readonly IProcess ProcessPlus;
+        protected readonly IProcess _processPlus;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="RemoteThread" /> class.
@@ -29,7 +30,7 @@ namespace Process.NET.Threads
         public RemoteThread(IProcess processPlus, ProcessThread thread)
         {
             // Save the parameters
-            ProcessPlus = processPlus;
+            _processPlus = processPlus;
             Native = thread;
             // Save the thread id
             Id = thread.Id;
@@ -62,7 +63,7 @@ namespace Process.NET.Threads
         public bool Equals(RemoteThread other)
         {
             if (ReferenceEquals(null, other)) return false;
-            return ReferenceEquals(this, other) || (Id == other.Id && ProcessPlus.Equals(other.ProcessPlus));
+            return ReferenceEquals(this, other) || (Id == other.Id && _processPlus.Equals(other._processPlus));
         }
 
         /// <summary>
@@ -140,7 +141,7 @@ namespace Process.NET.Threads
         /// <summary>
         ///     Gets if the thread is the main one in the remote process.
         /// </summary>
-        public bool IsMainThread => ProcessPlus.Native.Threads[0].Id == Id;
+        public bool IsMainThread => _processPlus.Native.Threads[0].Id == Id;
 
         /// <summary>
         ///     Gets if the thread is suspended.
@@ -195,7 +196,7 @@ namespace Process.NET.Threads
             // Get the exit code of the thread (can be nullable)
             var ret = ThreadHelper.GetExitCodeThread(Handle);
             // Return the exit code or the default value of T if there's no exit code
-            return ret.HasValue ? MarshalType<T>.PtrToObject(ProcessPlus, ret.Value) : default(T);
+            return ret.HasValue ? MarshalType<T>.PtrToObject(_processPlus, ret.Value) : default;
         }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace Process.NET.Threads
         /// </summary>
         public override int GetHashCode()
         {
-            return Id.GetHashCode() ^ ProcessPlus.GetHashCode();
+            return Id.GetHashCode() ^ _processPlus.GetHashCode();
         }
 
         /// <summary>
@@ -250,9 +251,9 @@ namespace Process.NET.Threads
             if (Native == null)
                 return;
             // Refresh the process info
-            ProcessPlus.Native.Refresh();
+            _processPlus.Native.Refresh();
             // Get new info about the thread
-            Native = ProcessPlus.Native.Threads.Cast<ProcessThread>().FirstOrDefault(t => t.Id == Native.Id);
+            Native = _processPlus.Native.Threads.Cast<ProcessThread>().FirstOrDefault(t => t.Id == Native.Id);
         }
 
         /// <summary>

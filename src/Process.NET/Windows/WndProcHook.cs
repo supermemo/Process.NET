@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Process.NET.Applied;
 using Process.NET.Native;
-using Process.NET.Native.Types;
 
 namespace Process.NET.Windows
 {

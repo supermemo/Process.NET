@@ -29,7 +29,7 @@ namespace Process.NET.Memory
         /// </returns>
         public override byte[] Read(IntPtr intPtr, int length)
         {
-            return MemoryHelper.ReadBytes(Handle, intPtr, length);
+            return MemoryHelper.ReadBytes(_handle, intPtr, length);
         }
 
         /// <summary>
@@ -61,9 +61,9 @@ namespace Process.NET.Memory
         /// <param name="bytesToWrite">The array of bytes to write.</param>
         public override int Write(IntPtr intPtr, byte[] bytesToWrite)
         {
-            using (new MemoryProtection(Handle, intPtr,
+            using (new MemoryProtection(_handle, intPtr,
                 MarshalType<byte>.Size*bytesToWrite.Length))
-                MemoryHelper.WriteBytes(Handle, intPtr, bytesToWrite);
+                MemoryHelper.WriteBytes(_handle, intPtr, bytesToWrite);
             return bytesToWrite.Length;
         }
     }

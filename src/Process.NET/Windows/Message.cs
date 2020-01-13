@@ -6,6 +6,7 @@ using System.Security;
 using System.Security.Permissions;
 using System.Text;
 using Process.NET.Native.Types;
+// ReSharper disable NonReadonlyMemberInGetHashCode
 
 namespace Process.NET.Windows
 {

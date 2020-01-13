@@ -174,7 +174,7 @@ namespace Process.NET
     public IWindowFactory WindowFactory { get; set; }
 
     /// <summary>
-    /// Enable execution of remote procedures by loading IProcedure members from <typeparamref name="TExecDesc"/>
+    /// Enable execution of remote procedures by loading IProcedure members from <typeparamref see="TExecDesc"/>
     /// </summary>
     public IRemoteExecution RemoteExecution { get; set; }
 

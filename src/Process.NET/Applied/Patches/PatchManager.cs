@@ -20,7 +20,7 @@ namespace Process.NET.Applied.Patches
 
         /// <summary>
         ///     The reference of the <see cref="MemoryBase" /> object.
-        ///     <remarks>This value is invalid if the manager was created for the <see cref="MemorySharp" /> class.</remarks>
+        ///     <remarks>This value is invalid if the manager was created for the <see cref="ProcessSharp" /> class.</remarks>
         /// </summary>
         protected IMemory MemoryBase { get; }
 
@@ -41,10 +41,10 @@ namespace Process.NET.Applied.Patches
         /// <returns>A patch object that exposes the required methods to apply and remove the patch.</returns>
         public Patch Create(IntPtr address, byte[] patchWith, string name)
         {
-            if (InternalItems.ContainsKey(name))
-                return InternalItems[name];
-            InternalItems.Add(name, new Patch(address, patchWith, name, MemoryBase));
-            return InternalItems[name];
+            if (_internalItems.ContainsKey(name))
+                return _internalItems[name];
+            _internalItems.Add(name, new Patch(address, patchWith, name, MemoryBase));
+            return _internalItems[name];
         }
 
         /// <summary>
@@ -57,8 +57,8 @@ namespace Process.NET.Applied.Patches
         public Patch CreateAndApply(IntPtr address, byte[] patchWith, string name)
         {
             Create(address, patchWith, name);
-            InternalItems[name].Enable();
-            return InternalItems[name];
+            _internalItems[name].Enable();
+            return _internalItems[name];
         }
     }
 }

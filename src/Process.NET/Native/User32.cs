@@ -289,15 +289,15 @@ namespace Process.NET.Native
         /// </summary>
         /// <param name="hWnd"></param>
         /// <param name="hWndInsertAfter"></param>
-        /// <param name="X"></param>
-        /// <param name="Y"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         /// <param name="cx"></param>
         /// <param name="cy"></param>
         /// <param name="uFlags"></param>
         /// <returns></returns>
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int uFlags);
 
         /// <summary>
         ///     Changes the text of the specified window's title bar (if it has one). If the specified window is a control, the

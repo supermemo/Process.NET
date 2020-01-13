@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+// ReSharper disable InvalidXmlDocComment
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
 
 namespace Process.NET.Native.Types
 {
@@ -121,6 +124,7 @@ namespace Process.NET.Native.Types
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Flags]
     public enum TokenObject
     {
         TOKEN_QUERY = 0x0008,
@@ -199,7 +203,7 @@ namespace Process.NET.Native.Types
     }
 
     /// <summary>
-    ///     The types used in the function <see cref="NativeMethods.SendInput" /> for input events.
+    ///     The types used in the function <see cref="User32.SendInput" /> for input events.
     /// </summary>
     public enum InputTypes
     {

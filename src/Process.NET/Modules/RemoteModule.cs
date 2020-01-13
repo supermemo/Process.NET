@@ -150,7 +150,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
         /// </summary>
-        /// <param name="memorySharp">The reference of the <see cref="MemorySharp" /> object.</param>
+        /// <param name="memorySharp">The reference of the <see cref="ProcessSharp" /> object.</param>
         /// <param name="module">The module to eject.</param>
         internal static void InternalEject(IProcess memorySharp, IProcessModule module)
         {

@@ -15,9 +15,9 @@ namespace Process.NET.Modules
         /// <summary>
         ///     The list containing all injected modules (writable).
         /// </summary>
-        protected readonly List<InjectedModule> InternalInjectedModules;
+        protected readonly List<InjectedModule> _internalInjectedModules;
 
-        protected readonly IProcess ProcessPlus;
+        protected readonly IProcess _processPlus;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ModuleFactory" /> class.
@@ -26,9 +26,9 @@ namespace Process.NET.Modules
         public ModuleFactory(IProcess processPlus)
         {
             // Save the parameter
-            ProcessPlus = processPlus;
+            _processPlus = processPlus;
             // Create a list containing all injected modules
-            InternalInjectedModules = new List<InjectedModule>();
+            _internalInjectedModules = new List<InjectedModule>();
         }
 
         /// <summary>
@@ -36,12 +36,12 @@ namespace Process.NET.Modules
         /// </summary>
         /// <param name="address">The address of the pointer.</param>
         /// <returns>A new instance of a <see cref="IPointer" /> class.</returns>
-        public IPointer this[IntPtr address] => new MemoryPointer(ProcessPlus, address);
+        public IPointer this[IntPtr address] => new MemoryPointer(_processPlus, address);
 
         /// <summary>
         ///     Gets the main module for the remote process.
         /// </summary>
-        public IProcessModule MainModule => FetchModule(ProcessPlus.Native.MainModule);
+        public IProcessModule MainModule => FetchModule(_processPlus.Native.MainModule);
 
         /// <summary>
         ///     Gets the modules that have been loaded in the remote process.
@@ -51,7 +51,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     Gets the native modules that have been loaded in the remote process.
         /// </summary>
-        public IEnumerable<ProcessModule> NativeModules => ProcessPlus.Native.Modules.Cast<ProcessModule>();
+        public IEnumerable<ProcessModule> NativeModules => _processPlus.Native.Modules.Cast<ProcessModule>();
 
         /// <summary>
         ///     Gets the specified module in the remote process.
@@ -66,13 +66,13 @@ namespace Process.NET.Modules
         public virtual void Dispose()
         {
             // Release all injected modules which must be disposed
-            foreach (var injectedModule in InternalInjectedModules.Where(m => m.MustBeDisposed))
+            foreach (var injectedModule in _internalInjectedModules.Where(m => m.MustBeDisposed))
                 injectedModule.Dispose();
             // Clean the cached functions related to this process
             foreach (
                 var cachedFunction in
                     RemoteModule.CachedFunctions.ToArray()
-                        .Where(cachedFunction => cachedFunction.Key.Item2 == ProcessPlus.Handle))
+                        .Where(cachedFunction => cachedFunction.Key.Item2 == _processPlus.Handle))
                 RemoteModule.CachedFunctions.Remove(cachedFunction);
             // Avoid the finalizer
             GC.SuppressFinalize(this);
@@ -81,7 +81,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     A collection containing all injected modules.
         /// </summary>
-        public IEnumerable<InjectedModule> InjectedModules => InternalInjectedModules.AsReadOnly();
+        public IEnumerable<InjectedModule> InjectedModules => _internalInjectedModules.AsReadOnly();
 
         /// <summary>
         ///     Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
@@ -93,7 +93,7 @@ namespace Process.NET.Modules
             var module = RemoteModules.FirstOrDefault(m => m.Name == moduleName);
             // Eject the module is it's valid
             if (module != null)
-                RemoteModule.InternalEject(ProcessPlus, module);
+                RemoteModule.InternalEject(_processPlus, module);
         }
 
         /// <summary>
@@ -108,9 +108,9 @@ namespace Process.NET.Modules
         public InjectedModule Inject(string path, bool mustBeDisposed = true)
         {
             // Injects the module
-            var module = InjectedModule.InternalInject(ProcessPlus, path);
+            var module = InjectedModule.InternalInject(_processPlus, path);
             // Add the module in the list
-            InternalInjectedModules.Add(module);
+            _internalInjectedModules.Add(module);
             // Return the module
             return module;
         }
@@ -125,12 +125,12 @@ namespace Process.NET.Modules
             if (!module.IsValid) return;
 
             // Find if the module is an injected one
-            var injected = InternalInjectedModules.FirstOrDefault(m => m.Equals(module));
+            var injected = _internalInjectedModules.FirstOrDefault(m => m.Equals(module));
             if (injected != null)
-                InternalInjectedModules.Remove(injected);
+                _internalInjectedModules.Remove(injected);
 
             // Eject the module
-            RemoteModule.InternalEject(ProcessPlus, module);
+            RemoteModule.InternalEject(_processPlus, module);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Process.NET.Modules
                 moduleName += ".dll";
 
             // Fetch and return the module
-            return new RemoteModule(ProcessPlus, NativeModules.First(m => m.ModuleName.ToLower() == moduleName));
+            return new RemoteModule(_processPlus, NativeModules.First(m => m.ModuleName.ToLower() == moduleName));
         }
 
         /// <summary>

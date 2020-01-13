@@ -61,7 +61,8 @@ namespace Process.NET.Memory
         /// </summary>
         public override int GetHashCode()
         {
-            return BaseAddress.GetHashCode() ^ Process.GetHashCode() ^ Information.RegionSize.GetHashCode();
+          // ReSharper disable once NonReadonlyMemberInGetHashCode
+          return BaseAddress.GetHashCode() ^ Process.GetHashCode() ^ Information.RegionSize.GetHashCode();
         }
 
         public static bool operator ==(MemoryRegion left, MemoryRegion right)

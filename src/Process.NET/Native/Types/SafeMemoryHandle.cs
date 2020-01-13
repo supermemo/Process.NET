@@ -2,6 +2,7 @@ using System;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Permissions;
 using Microsoft.Win32.SafeHandles;
+// ReSharper disable InvalidXmlDocComment
 
 namespace Process.NET.Native.Types
 {

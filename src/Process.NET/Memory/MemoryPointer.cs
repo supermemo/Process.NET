@@ -147,6 +147,7 @@ namespace Process.NET.Memory
     /// <summary>Serves as a hash function for a particular type.</summary>
     public override int GetHashCode()
     {
+      // ReSharper disable once NonReadonlyMemberInGetHashCode
       return BaseAddress.GetHashCode() ^ Process.GetHashCode();
     }
 
@@ -614,7 +615,10 @@ namespace Process.NET.Memory
                 if (handler(newValue))
                   toRm.Add(handler);
               }
-              catch { }
+              catch
+              {
+                // ignored
+              }
 
           foreach (var handler in toRm)
             UnregisterValueChangedEventHandler(handler);

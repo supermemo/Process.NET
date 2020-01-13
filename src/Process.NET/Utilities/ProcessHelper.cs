@@ -4,8 +4,6 @@ using System.Linq;
 using Process.NET.Extensions;
 using Process.NET.Native;
 using Process.NET.Native.Types;
-using ProcessModule = System.Diagnostics.ProcessModule;
-using ProcessThread = System.Diagnostics.ProcessThread;
 using SystemProcess = System.Diagnostics.Process;
 
 namespace Process.NET.Utilities

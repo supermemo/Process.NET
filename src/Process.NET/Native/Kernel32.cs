@@ -109,7 +109,7 @@ namespace Process.NET.Native
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DebugSetProcessKillOnExit(bool KillOnExit);
+        public static extern bool DebugSetProcessKillOnExit(bool killOnExit);
 
         [DllImport("kernel32.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern unsafe SafeLoadLibrary LoadLibraryExW([In] string lpwLibFileName, [In] void* hFile,

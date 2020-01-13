@@ -14,18 +14,18 @@ namespace Process.NET.Threads
     public class ThreadFactory : IThreadFactory
     {
         /// <summary>
-        ///     The reference of the <see cref="Process" /> object.
+        ///     The reference of the <see cref="_process" /> object.
         /// </summary>
-        protected readonly IProcess Process;
+        protected readonly IProcess _process;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="ThreadFactory" /> class.
         /// </summary>
-        /// <param name="process">The reference of the <see cref="Process" /> object.</param>
+        /// <param name="process">The reference of the <see cref="_process" /> object.</param>
         public ThreadFactory(IProcess process)
         {
             // Save the parameter
-            Process = process;
+            _process = process;
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Process.NET.Threads
         {
             get
             {
-                return new RemoteThread(Process,
+                return new RemoteThread(_process,
                     NativeThreads.Aggregate((current, next) => next.StartTime < current.StartTime ? next : current));
             }
         }
@@ -48,9 +48,9 @@ namespace Process.NET.Threads
             get
             {
                 // Refresh the process info
-                Process.Native.Refresh();
+                _process.Native.Refresh();
                 // Enumerates all threads
-                return Process.Native.Threads.Cast<ProcessThread>();
+                return _process.Native.Threads.Cast<ProcessThread>();
             }
         }
 
@@ -59,7 +59,7 @@ namespace Process.NET.Threads
         /// </summary>
         public IEnumerable<IRemoteThread> RemoteThreads
         {
-            get { return NativeThreads.Select(t => new RemoteThread(Process, t)); }
+            get { return NativeThreads.Select(t => new RemoteThread(_process, t)); }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Process.NET.Threads
         /// <returns>A new instance of a <see cref="RemoteThread" /> class.</returns>
         public IRemoteThread this[int threadId]
         {
-            get { return new RemoteThread(Process, NativeThreads.First(t => t.Id == threadId)); }
+            get { return new RemoteThread(_process, NativeThreads.First(t => t.Id == threadId)); }
         }
 
         /// <summary>
@@ -85,15 +85,15 @@ namespace Process.NET.Threads
         public IRemoteThread Create(IntPtr address, dynamic parameter, bool isStarted = true)
         {
             // Marshal the parameter
-            var marshalledParameter = MarshalValue.Marshal(Process, parameter);
+            var marshalledParameter = MarshalValue.Marshal(_process, parameter);
 
             //Create the thread
             var ret = ThreadHelper.NtQueryInformationThread(
-                ThreadHelper.CreateRemoteThread(Process.Handle, address, marshalledParameter.Reference,
+                ThreadHelper.CreateRemoteThread(_process.Handle, address, marshalledParameter.Reference,
                     ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
-            var result = new RemoteThread(Process, Process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId),
+            var result = new RemoteThread(_process, _process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId),
                 marshalledParameter);
 
             if (isStarted)
@@ -114,10 +114,10 @@ namespace Process.NET.Threads
         {
             //Create the thread
             var ret = ThreadHelper.NtQueryInformationThread(
-                ThreadHelper.CreateRemoteThread(Process.Handle, address, IntPtr.Zero, ThreadCreationFlags.Suspended));
+                ThreadHelper.CreateRemoteThread(_process.Handle, address, IntPtr.Zero, ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
-            var result = new RemoteThread(Process, Process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId));
+            var result = new RemoteThread(_process, _process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId));
 
             // If the thread must be started
             if (isStarted)
@@ -177,7 +177,7 @@ namespace Process.NET.Threads
         /// <returns>A new instance of the <see cref="RemoteThread" /> class.</returns>
         public IRemoteThread GetThreadById(int id)
         {
-            return new RemoteThread(Process, NativeThreads.First(t => t.Id == id));
+            return new RemoteThread(_process, NativeThreads.First(t => t.Id == id));
         }
 
         /// <summary>
