@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if DEBUG
+using System.Diagnostics;
+#endif
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Security;
